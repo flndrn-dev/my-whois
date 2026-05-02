@@ -9,6 +9,7 @@ import type { DomainSnapshot } from "@/lib/types";
 import { normalizeDomain } from "@/lib/validate-domain";
 import { parsePairSlug } from "@/lib/data/comparison-pairs";
 import { comparisonPageJsonLd } from "@/lib/seo";
+import { indexnowNotify, siteAbsoluteUrl } from "@/lib/indexnow";
 
 type Params = { slug: string };
 
@@ -60,6 +61,8 @@ export default async function ComparePage({
     safeLookup(bDomain),
   ]);
   if (!a && !b) notFound();
+
+  void indexnowNotify([siteAbsoluteUrl(`/compare/${slug}`)]);
 
   return (
     <PageWithSideAds wide>

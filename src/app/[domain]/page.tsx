@@ -18,7 +18,7 @@ import { PageWithSideAds } from "@/components/layout/PageWithSideAds";
 import { lookupDomain, DomainNotFoundError } from "@/lib/lookup";
 import { normalizeDomain } from "@/lib/validate-domain";
 import { domainPageJsonLd } from "@/lib/seo";
-import { indexnowNotify } from "@/lib/indexnow";
+import { indexnowNotify, siteAbsoluteUrl } from "@/lib/indexnow";
 
 type Params = { domain: string };
 
@@ -65,9 +65,7 @@ export default async function DomainPage({
     throw err;
   }
 
-  void indexnowNotify([
-    `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://my-whois.com"}/${domain}`,
-  ]);
+  void indexnowNotify([siteAbsoluteUrl(`/${domain}`)]);
 
   return (
     <PageWithSideAds wide>
