@@ -31,11 +31,14 @@ export function DomainInput({ defaultValue = "", size = "lg", autoFocus }: Props
     router.push(`/${normalized}`);
   }
 
+  const fieldH = size === "lg" ? "h-14" : "h-10";
+  const fieldText = size === "lg" ? "text-lg" : "text-base";
+
   return (
     <form onSubmit={submit} className="w-full max-w-2xl">
       <div className="flex flex-col sm:flex-row gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-muted" />
+          <Search className={`absolute left-4 top-1/2 -translate-y-1/2 ${size === "lg" ? "size-5" : "size-4"} text-muted`} />
           <Input
             value={value}
             onChange={(e) => setValue(e.target.value)}
@@ -46,13 +49,12 @@ export function DomainInput({ defaultValue = "", size = "lg", autoFocus }: Props
             spellCheck={false}
             autoFocus={autoFocus}
             aria-label="Domain to look up"
-            className={`${size === "lg" ? "h-14 text-lg" : ""} pl-12 font-mono`}
+            className={`${fieldH} ${fieldText} pl-12 font-mono`}
           />
         </div>
         <Button
           type="submit"
-          size={size === "lg" ? "lg" : "default"}
-          className={size === "lg" ? "h-14 px-6 text-base" : ""}
+          className={`${fieldH} px-6 ${size === "lg" ? "text-base" : "text-sm"}`}
         >
           Look up
           <ArrowRight className="size-4" />

@@ -110,13 +110,7 @@ export default async function DomainPage({
           </div>
         </div>
         <aside className="hidden lg:block lg:col-span-4">
-          <AdSlot
-            slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR ?? ""}
-            format="rectangle"
-            reservedHeight={250}
-            className="sticky top-24"
-          />
-          <div className="mt-6 rounded-lg border border-border p-4 bg-surface/40">
+          <div className="rounded-lg border border-border p-4 bg-surface/40">
             <h3 className="text-sm uppercase tracking-wide text-muted">
               Quick facts
             </h3>
@@ -137,6 +131,12 @@ export default async function DomainPage({
               </div>
             </dl>
           </div>
+          <AdSlot
+            slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR ?? ""}
+            format="rectangle"
+            reservedHeight={250}
+            className="mt-6"
+          />
         </aside>
       </div>
 

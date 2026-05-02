@@ -13,7 +13,7 @@ export function Header() {
         >
           <span className="hidden sm:block">
             <Image
-              src="/logo.svg"
+              src="/logo_light.svg"
               alt="my whois"
               width={140}
               height={40}
@@ -21,7 +21,7 @@ export function Header() {
               priority
             />
             <Image
-              src="/logo_light.svg"
+              src="/logo.svg"
               alt="my whois"
               width={140}
               height={40}
@@ -31,7 +31,7 @@ export function Header() {
           </span>
           <span className="sm:hidden">
             <Image
-              src="/icon.svg"
+              src="/icon_light.svg"
               alt="my whois"
               width={40}
               height={40}
@@ -39,7 +39,7 @@ export function Header() {
               priority
             />
             <Image
-              src="/icon_light.svg"
+              src="/icon.svg"
               alt="my whois"
               width={40}
               height={40}
