@@ -10,16 +10,17 @@ declare global {
 
 type AdSlotProps = {
   slotId: string;
-  format: "banner" | "rectangle" | "native";
-  /** Position label shown in the pre-approval placeholder (e.g., "Header", "Sidebar"). */
+  format: "banner" | "rectangle" | "skyscraper" | "native";
+  /** Position label shown in the placeholder (e.g., "Sidebar — top"). */
   label?: string;
   className?: string;
   reservedHeight: number;
 };
 
 const FORMAT_CONFIG = {
-  banner: { adFormat: "horizontal", responsive: true, sizeHint: "728×90 desktop · 320×50 mobile" },
+  banner: { adFormat: "horizontal", responsive: true, sizeHint: "728×90 / 320×50" },
   rectangle: { adFormat: "rectangle", responsive: false, sizeHint: "300×250" },
+  skyscraper: { adFormat: "vertical", responsive: false, sizeHint: "300×600 half-page" },
   native: {
     adFormat: "fluid",
     responsive: true,
@@ -44,23 +45,23 @@ function Placeholder({
   const config = FORMAT_CONFIG[format];
   return (
     <div
-      className={`ad-slot-placeholder rounded-lg border-2 border-dashed border-border/70 bg-surface/40 flex flex-col items-center justify-center gap-1 text-muted px-4 ${className}`}
+      className={`ad-slot-placeholder relative rounded-lg border-2 border-dashed border-accent/70 bg-accent/10 flex flex-col items-center justify-center gap-1.5 px-4 text-center ${className}`}
       style={{ minHeight: reservedHeight }}
       role="complementary"
       aria-label="Advertising placement"
     >
-      <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-accent/80">
+      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-accent">
         Google AdSense
       </span>
-      <span className="text-xs font-medium text-foreground/70">
+      <span className="text-sm font-semibold text-foreground">
         {label ?? "Ad placement"}
       </span>
-      <span className="text-[11px] opacity-70">
+      <span className="text-xs text-muted">
         {format} · {config.sizeHint}
       </span>
-      <span className="text-[10px] opacity-50 italic">
+      <span className="text-[10px] text-muted/80 italic mt-1">
         {status === "pending-slot"
-          ? "Slot ID pending"
+          ? "Slot ID pending in env"
           : "Reserved for advertising"}
       </span>
     </div>
@@ -97,8 +98,6 @@ export function AdSlot({
     return () => observer.disconnect();
   }, [enabled]);
 
-  // Pre-approval (no client ID) — show a visible labelled placeholder so
-  // both we and the AdSense reviewer can see where ads will land.
   if (!clientId) {
     return (
       <Placeholder
@@ -111,8 +110,6 @@ export function AdSlot({
     );
   }
 
-  // AdSense configured but this specific slot ID isn't yet — same visible
-  // placeholder, different status caption.
   if (!slotId) {
     return (
       <Placeholder

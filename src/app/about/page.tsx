@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { AdSlot } from "@/components/layout/AdSlot";
+import { PageWithSideAds } from "@/components/layout/PageWithSideAds";
 
 export const metadata: Metadata = {
   title: "About",
@@ -9,14 +9,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="container-content py-12 sm:py-16 max-w-3xl">
-      <AdSlot
-        slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HEADER ?? ""}
-        format="banner"
-        label="Header banner"
-        reservedHeight={90}
-        className="mb-10"
-      />
+    <PageWithSideAds>
       <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">
         About my whois
       </h1>
@@ -60,14 +53,6 @@ export default function AboutPage() {
           note via your favourite channel and we&rsquo;ll fold it in.
         </p>
       </div>
-
-      <AdSlot
-        slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER ?? ""}
-        format="banner"
-        label="Footer banner"
-        reservedHeight={90}
-        className="mt-12"
-      />
-    </div>
+    </PageWithSideAds>
   );
 }

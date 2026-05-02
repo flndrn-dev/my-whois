@@ -3,13 +3,13 @@ import { VisitorIp } from "@/components/lookup/VisitorIp";
 import { AboutSection } from "@/components/content/AboutSection";
 import { PopularDomains } from "@/components/content/PopularDomains";
 import { ComparisonShowcase } from "@/components/content/ComparisonShowcase";
-import { AdSlot } from "@/components/layout/AdSlot";
+import { PageWithSideAds } from "@/components/layout/PageWithSideAds";
 import { FadeIn } from "@/components/ui/FadeIn";
 
 export default function HomePage() {
   return (
-    <div className="container-content py-12 sm:py-20">
-      <section className="text-center max-w-3xl mx-auto">
+    <PageWithSideAds wide>
+      <section className="text-center">
         <FadeIn>
           <p className="text-xs uppercase tracking-[0.2em] text-muted">
             domain inspector
@@ -37,25 +37,9 @@ export default function HomePage() {
         </FadeIn>
       </section>
 
-      <AdSlot
-        slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HEADER ?? ""}
-        format="banner"
-        label="Header banner"
-        reservedHeight={90}
-        className="my-10"
-      />
-
       <AboutSection />
       <PopularDomains />
       <ComparisonShowcase />
-
-      <AdSlot
-        slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER ?? ""}
-        format="banner"
-        label="Footer banner"
-        reservedHeight={90}
-        className="my-10"
-      />
-    </div>
+    </PageWithSideAds>
   );
 }

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { DomainInput } from "@/components/lookup/DomainInput";
 import { ComparisonView } from "@/components/compare/ComparisonView";
 import { CompareTracker } from "@/components/lookup/CompareTracker";
-import { AdSlot } from "@/components/layout/AdSlot";
+import { PageWithSideAds } from "@/components/layout/PageWithSideAds";
 import { lookupDomain, DomainNotFoundError } from "@/lib/lookup";
 import type { DomainSnapshot } from "@/lib/types";
 import { normalizeDomain } from "@/lib/validate-domain";
@@ -14,10 +14,6 @@ type Params = { slug: string };
 
 export const revalidate = 3600;
 export const dynamicParams = true;
-
-// Pairs are listed in the sitemap so search engines discover them, but we
-// render on demand to avoid 100 simultaneous RDAP fetches at build time and
-// to stay tolerant of any single pair failing.
 
 async function safeLookup(domain: string): Promise<DomainSnapshot | null> {
   try {
@@ -66,15 +62,7 @@ export default async function ComparePage({
   if (!a && !b) notFound();
 
   return (
-    <div className="container-content py-8 sm:py-10">
-      <AdSlot
-        slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HEADER ?? ""}
-        format="banner"
-        label="Header banner"
-        reservedHeight={90}
-        className="mb-8"
-      />
-
+    <PageWithSideAds wide>
       <div className="mb-8">
         <p className="text-xs uppercase tracking-[0.2em] text-muted">
           domain comparison
@@ -85,14 +73,6 @@ export default async function ComparePage({
           {bDomain}
         </h1>
       </div>
-
-      <AdSlot
-        slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ABOVE_RESULT ?? ""}
-        format="banner"
-        label="Above-result banner"
-        reservedHeight={90}
-        className="mb-6"
-      />
 
       <CompareTracker a={aDomain} b={bDomain} />
 
@@ -106,14 +86,6 @@ export default async function ComparePage({
         </div>
       )}
 
-      <AdSlot
-        slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MID_RESULT ?? ""}
-        format="native"
-        label="Mid-result native"
-        reservedHeight={250}
-        className="my-10"
-      />
-
       <div className="mt-10 max-w-2xl">
         <h2 className="font-display text-xl font-semibold mb-3">
           Compare another pair
@@ -125,14 +97,6 @@ export default async function ComparePage({
         </p>
       </div>
 
-      <AdSlot
-        slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER ?? ""}
-        format="banner"
-        label="Footer banner"
-        reservedHeight={90}
-        className="mt-10"
-      />
-
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
@@ -140,6 +104,6 @@ export default async function ComparePage({
           __html: JSON.stringify(comparisonPageJsonLd(aDomain, bDomain)),
         }}
       />
-    </div>
+    </PageWithSideAds>
   );
 }
