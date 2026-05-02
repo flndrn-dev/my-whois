@@ -10,7 +10,10 @@ export const metadata: Metadata = {
   title: "Blog — domain hygiene, DNS, SSL, and the WHOIS world",
   description:
     "Long-form posts on DNSSEC, GDPR-redacted WHOIS, SSL certificate chains, domain age, and how to read the data behind any domain.",
-  alternates: { canonical: "/blog" },
+  alternates: {
+    canonical: "/blog",
+    types: { "application/rss+xml": "/blog/feed.xml" },
+  },
   openGraph: {
     type: "website",
     title: "my whois — blog",
@@ -35,9 +38,18 @@ export default async function BlogIndexPage() {
         <p className="text-xs uppercase tracking-[0.2em] text-muted">
           reading
         </p>
-        <h1 className="mt-2 font-display text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight">
-          Blog
-        </h1>
+        <div className="mt-2 flex items-baseline justify-between gap-6 flex-wrap">
+          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight">
+            Blog
+          </h1>
+          <a
+            href="/blog/feed.xml"
+            className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-[0.18em] text-muted hover:text-accent transition-colors border border-border rounded px-2.5 py-1.5"
+            aria-label="RSS feed"
+          >
+            RSS
+          </a>
+        </div>
         <p className="mt-4 text-lg text-muted">
           Original writing on domain hygiene, the protocols behind WHOIS and
           DNS, and what the data on every result page actually means.
