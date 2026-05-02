@@ -50,6 +50,12 @@ export function Header() {
         </Link>
         <nav className="flex items-center gap-4 text-sm text-muted">
           <Link
+            href="/watchlist"
+            className="hover:text-foreground transition-colors hidden md:inline"
+          >
+            Watchlist
+          </Link>
+          <Link
             href="/blog"
             className="hover:text-foreground transition-colors hidden sm:inline"
           >

@@ -1,4 +1,4 @@
-import { ShieldCheck, ShieldAlert, ShieldX, Calendar, Server, Globe, Building2, ExternalLink, Info, Database } from "lucide-react";
+import { ShieldCheck, ShieldAlert, ShieldX, Calendar, Server, Globe, Building2, ExternalLink, Info, Database, Bell } from "lucide-react";
 import type { DomainSnapshot } from "@/lib/types";
 
 function Band({
@@ -139,7 +139,13 @@ export function SourceBand({ info }: { info: DomainSnapshot["info"] }) {
   );
 }
 
-export function DatesBand({ info }: { info: DomainSnapshot["info"] }) {
+export function DatesBand({
+  info,
+  domain,
+}: {
+  info: DomainSnapshot["info"];
+  domain: string;
+}) {
   const expiryDays = daysFromNow(info.expirationDate);
   const expiryColor =
     expiryDays === null
@@ -187,6 +193,15 @@ export function DatesBand({ info }: { info: DomainSnapshot["info"] }) {
           </dd>
         </div>
       </dl>
+      {info.expirationDate ? (
+        <a
+          href={`/watchlist?domain=${encodeURIComponent(domain)}`}
+          className="mt-4 inline-flex items-center gap-1.5 text-xs text-muted hover:text-accent transition-colors"
+        >
+          <Bell className="size-3.5" />
+          Get an email before this expires
+        </a>
+      ) : null}
     </Band>
   );
 }

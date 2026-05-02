@@ -87,6 +87,20 @@ export default function PrivacyPage() {
           do not knowingly collect personal information from them.
         </p>
         <h2 className="font-display text-xl font-semibold text-foreground">
+          Domain expiry watchlist
+        </h2>
+        <p>
+          If you opt into the watchlist on{" "}
+          <a className="text-accent underline" href="/watchlist">/watchlist</a>,
+          we store the email address and the watched domain in a Resend
+          audience. The pairing exists only so we can send you the 30/14/7-day
+          expiry alerts you asked for. We do not store your IP, browser
+          fingerprint, or any session data alongside the subscription.
+          Reply to any watchlist email to unsubscribe — replies route to the
+          same address managed by the operator and the audience entry is
+          removed.
+        </p>
+        <h2 className="font-display text-xl font-semibold text-foreground">
           Your rights
         </h2>
         <p>

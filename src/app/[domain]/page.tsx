@@ -79,7 +79,7 @@ export default async function DomainPage({
       <div className="space-y-2 mt-8">
         <RedactionNotice notes={snapshot.notes} />
         <RegistrarBand info={snapshot.info} />
-        <DatesBand info={snapshot.info} />
+        <DatesBand info={snapshot.info} domain={domain} />
         <NameserversBand info={snapshot.info} />
         <DnsRecordsTabs dns={snapshot.dns} />
         <SslInfoBand ssl={snapshot.ssl} />
