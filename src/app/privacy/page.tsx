@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "How my whois treats your data — short version: barely.",
+  description:
+    "How my whois treats your data — what we collect, how we use it, and your choices.",
 };
 
 export default function PrivacyPage() {
@@ -19,31 +20,34 @@ export default function PrivacyPage() {
           What we collect
         </h2>
         <p>
-          my whois does not require an account, set tracking cookies of its
-          own, or log your IP address. We use Umami, a cookieless,
-          self-hosted analytics tool, which stores aggregate counts of page
-          views and events (lookup, compare, share) — never anything that
-          identifies you personally.
+          We may collect basic technical information when you visit my whois,
+          such as the pages you view and aggregate usage patterns, in order
+          to operate and improve the service. We do not require an account
+          to use the lookup tool, and we do not ask you to provide personal
+          information.
         </p>
         <h2 className="font-display text-xl font-semibold text-foreground">
           Lookup queries
         </h2>
         <p>
-          When you look up a domain, the result is cached server-side for up
-          to one hour, keyed by the domain name only. Your IP, session, and
-          referrer are never linked to that cache entry. Emails and IP
-          addresses are redacted from registry responses before they reach
-          your browser.
+          When you look up a domain, the result may be cached briefly so
+          repeated lookups are fast. Lookup queries are not associated with
+          any individual visitor profile. Information returned by domain
+          registries is shown to you as published; sensitive contact data
+          is redacted before it reaches your browser.
         </p>
         <h2 className="font-display text-xl font-semibold text-foreground">
-          Advertising
+          Cookies and third-party advertising
         </h2>
         <p>
-          The site is monetised by Google AdSense. AdSense and its partners
-          may use cookies or similar technologies to serve ads based on your
-          visit to this and other sites. EU/UK visitors are served
-          non-personalised ads unless a future consent prompt collects
-          explicit consent. You can opt out of personalised advertising via{" "}
+          This site may display advertisements served by third-party ad
+          networks, including Google AdSense. These networks and their
+          partners may use cookies or similar technologies to serve ads
+          based on your prior visits to this site or other sites on the
+          web, in accordance with their own privacy policies.
+        </p>
+        <p>
+          You can opt out of personalized advertising by visiting{" "}
           <a
             href="https://adssettings.google.com"
             className="underline hover:text-foreground"
@@ -51,31 +55,51 @@ export default function PrivacyPage() {
             target="_blank"
           >
             Google&rsquo;s Ads Settings
+          </a>{" "}
+          or the{" "}
+          <a
+            href="https://www.aboutads.info/choices/"
+            className="underline hover:text-foreground"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Digital Advertising Alliance opt-out page
           </a>
-          .
+          . EU and UK visitors may be served non-personalized ads by default
+          where required by local regulations.
         </p>
         <h2 className="font-display text-xl font-semibold text-foreground">
-          Data we do not store
+          Affiliate links
         </h2>
         <p>
-          No accounts, no profiles, no databases of users, no IP logs, no
-          email addresses. Lookup history is held only in volatile memory
-          and expires within an hour.
+          Some outbound links to third-party services (for example, domain
+          registrars) are affiliate links. If you sign up through one, we
+          may receive a small commission at no additional cost to you. The
+          presence of an affiliate link does not influence the order or
+          curation of the recommendations we surface.
         </p>
         <h2 className="font-display text-xl font-semibold text-foreground">
-          Your rights (GDPR / UK GDPR)
+          Children&rsquo;s privacy
         </h2>
         <p>
-          Because we do not collect personal data, there is nothing to
-          access, correct, or erase on request. If a regulator wishes to
-          confirm this, the codebase is open to inspection.
+          my whois is not directed to children under the age of 13 and we
+          do not knowingly collect personal information from them.
+        </p>
+        <h2 className="font-display text-xl font-semibold text-foreground">
+          Your rights
+        </h2>
+        <p>
+          Depending on where you live, you may have rights to access,
+          correct, or request deletion of personal information. Because we
+          do not maintain user profiles, most requests will result in a
+          response confirming that no personal record exists.
         </p>
         <h2 className="font-display text-xl font-semibold text-foreground">
           Changes
         </h2>
         <p>
-          Material changes to this policy will be reflected by an updated
-          revision date at the top of this page.
+          We may update this policy from time to time. Material changes will
+          be reflected by an updated revision date at the top of this page.
         </p>
       </div>
     </div>
