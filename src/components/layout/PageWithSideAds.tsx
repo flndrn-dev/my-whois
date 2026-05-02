@@ -15,7 +15,7 @@ type Props = {
 
 export function PageWithSideAds({ children, wide = false }: Props) {
   return (
-    <div className="mx-auto w-full max-w-[1400px] px-4 sm:px-6 py-8 sm:py-10">
+    <div className="container-content py-8 sm:py-10">
       <AdSlot
         slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR_TOP ?? ""}
         format="banner"
