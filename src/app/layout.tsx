@@ -68,6 +68,11 @@ export const metadata: Metadata = {
   },
   robots: { index: true, follow: true },
   alternates: { canonical: "/" },
+  verification: {
+    other: {
+      "msvalidate.01": "BDE68623F518ADD3CC5723A942105E1C",
+    },
+  },
 };
 
 export const viewport: Viewport = {
