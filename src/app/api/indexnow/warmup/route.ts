@@ -7,7 +7,7 @@ import { getAllPosts } from "@/lib/blog";
 
 export const dynamic = "force-dynamic";
 
-const STATIC_PATHS = ["/", "/blog", "/watchlist", "/about", "/privacy", "/terms"];
+const STATIC_PATHS = ["/", "/blog", "/watchlist", "/bulk", "/about", "/privacy", "/terms"];
 
 // One-shot endpoint that bulk-submits every pre-generated route to IndexNow:
 // homepage + popular-domain lookups + all comparison pages + legal pages.
