@@ -1,6 +1,6 @@
 export function AboutSection() {
   return (
-    <section className="py-12 border-t border-border">
+    <section className="mt-10 py-12 border-t border-border">
       <div className="grid lg:grid-cols-12 gap-10">
         <div className="lg:col-span-4">
           <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">

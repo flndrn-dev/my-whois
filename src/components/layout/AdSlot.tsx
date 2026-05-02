@@ -54,7 +54,14 @@ export function AdSlot({
     return () => observer.disconnect();
   }, [enabled]);
 
-  if (!enabled) {
+  // No AdSense configured at all → render nothing so empty placeholders
+  // don't leave dead space across the page in dev / pre-approval.
+  if (!clientId) return null;
+
+  // AdSense is configured but this specific slot ID isn't yet — keep the
+  // reserved-height placeholder so the layout doesn't shift once the slot
+  // is filled in via env vars.
+  if (!slotId) {
     return (
       <div
         className={`ad-slot-placeholder ${className}`}
