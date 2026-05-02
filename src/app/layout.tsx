@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import Script from "next/script";
 import { Inter, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { Providers } from "./providers";
 import { Header } from "@/components/layout/Header";
@@ -90,10 +89,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <head>
         {ADSENSE_CLIENT_ID ? (
-          <Script
-            id="adsense-script"
+          // Raw <script> tag (NOT next/script) so the AdSense crawler sees it
+          // in the server-rendered HTML during site verification. next/script
+          // with afterInteractive only emits a <link rel="preload">, which
+          // AdSense does not accept.
+          <script
             async
-            strategy="afterInteractive"
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}`}
             crossOrigin="anonymous"
           />
