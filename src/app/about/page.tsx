@@ -29,11 +29,13 @@ export default function AboutPage() {
           server.
         </p>
         <p>
-          The site is monetised exclusively through Google AdSense. We do
-          not sell data, do not run other ad networks, do not rate-limit by
-          IP, and do not log your queries against you. Cookieless analytics
-          (Umami, self-hosted) tells us how many people looked something up
-          — that&rsquo;s the entire telemetry footprint.
+          Our goal is simple: take the dry, fragmented world of WHOIS and
+          DNS data and turn it into something anyone can read in ten
+          seconds. Whether you&rsquo;re a developer debugging a setup, a
+          founder vetting a brand, or just curious about a name you saw,
+          you should walk away with a clear answer — not a wall of jargon.
+          We focus on speed, clarity, and giving you the full picture
+          without the noise.
         </p>
         <p>
           Coverage spans 1,000+ extensions across gTLDs (<code>.com</code>,
