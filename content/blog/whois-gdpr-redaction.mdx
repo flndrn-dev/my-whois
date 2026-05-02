@@ -1,0 +1,104 @@
+---
+title: "What WHOIS hides: GDPR, registrant redaction, and why your data isn't where it used to be"
+description: "Before May 2018, WHOIS lookups returned the registrant's name, email, address, and phone number. Then GDPR happened. Here's what changed, what registries do now, and how to read a redacted record."
+publishedAt: "2026-05-03"
+tags: ["whois", "rdap", "privacy", "gdpr"]
+---
+
+For three decades, WHOIS was the most underwhelming surveillance tool on the internet: type any domain into a query, get the registrant's full name, email, postal address, and phone number back in plaintext. It was designed in 1982 for a 300-host ARPANET research community where everyone knew everyone. It was preserved unchanged into the era of 350-million-domain commercial use, and by 2010 it was the single best source for spammers building target lists.
+
+In May 2018, the General Data Protection Regulation came into effect across the European Union. The 1982 design met 21st-century data-protection law, and within weeks the global registrar industry pivoted. Today most WHOIS records show `(REDACTED FOR PRIVACY)` where the personal data used to be. Here's what actually happened, what's left, and how to read the new format.
+
+## The pre-GDPR world
+
+Before May 2018, every domain registration produced a public record containing:
+
+- Registrant name and organization
+- Registrant postal address
+- Registrant email
+- Registrant phone number
+- Same fields again for the admin contact, technical contact, and billing contact (often the same person)
+- Registrar name, registrar URL, IANA ID
+- Created / updated / expiration dates
+- Authoritative nameservers
+- Domain status flags
+
+You could query this for free, from any registry, with no rate limit beyond what the legacy `whois` command-line tool would give you. Spammers scraped it nightly. Trademark lawyers ran bulk queries to find infringement. Investigators traced ownership trees across hundreds of domains. There were upsides — researchers, journalists, and security teams used the same data for legitimate work — but the privacy cost was enormous and never legally justified.
+
+## What GDPR actually requires
+
+GDPR doesn't single out WHOIS. It's a general law that says: if you collect personal data on EU residents, you need a lawful basis to publish it. "Because we always have" is not a lawful basis. ICANN, which contracts with all gTLD registries, was given roughly nothing in the way of advance notice. By spring 2018 it became clear that publishing registrant data without consent or a clear legal interest would expose registrars to fines of up to 4% of global revenue.
+
+ICANN responded with the **Temporary Specification for gTLD Registration Data** in May 2018, then made it permanent as a phased policy. The short version:
+
+- Registrant name, email, phone, and address are no longer published in WHOIS by default.
+- Registrar name, dates, status, and nameservers continue to be public.
+- A "Registration Data Access Protocol" channel (RDAP) was established for authenticated access to redacted fields, available to law enforcement and certain accredited parties.
+- Registries chose where on a spectrum to land — some redact for all registrants regardless of jurisdiction, some redact only for individuals, some only for EU residents.
+
+ccTLDs (country-code TLDs) operate independently of ICANN, so each one made its own choice. Most European ccTLDs (.de, .nl, .fr, .ie) had already redacted personal data before 2018. American ones like .us still publish more by default. The result is a patchwork.
+
+## What you see today
+
+Run any major commercial domain through a current WHOIS query and you'll get something like this:
+
+```
+Domain Name: EXAMPLE.COM
+Registry Domain ID: 2336799_DOMAIN_COM-VRSN
+Registrar WHOIS Server: whois.example-registrar.com
+Registrar URL: http://www.example-registrar.com
+Updated Date: 2025-11-12T08:24:33Z
+Creation Date: 1995-08-14T04:00:00Z
+Registry Expiry Date: 2027-08-13T04:00:00Z
+Registrar: Example Registrar, LLC
+Registrar IANA ID: 9999
+Registrant Name: REDACTED FOR PRIVACY
+Registrant Organization: REDACTED FOR PRIVACY
+Registrant Email: Please query the RDAP service for contact information
+Registrant Country: US
+Name Server: NS1.EXAMPLE-DNS.COM
+Name Server: NS2.EXAMPLE-DNS.COM
+DNSSEC: unsigned
+```
+
+The country field is often retained — it's coarse enough not to identify an individual but gives a general regulatory hint. Email is replaced with a contact-form URL or instructions to query RDAP. Names are usually `REDACTED FOR PRIVACY` or just blank.
+
+For corporate registrants (Apple Inc, Google LLC, etc.), you'll often see the organization name preserved — GDPR protects natural persons, not legal entities. So large brands tend to show up identifiably while individual registrants don't.
+
+## RDAP: the structured replacement
+
+The legacy WHOIS protocol returns unstructured text, which is why every parser is brittle and every site formats it differently. ICANN took the opportunity to push registries onto **RDAP** — Registration Data Access Protocol — a JSON-based replacement.
+
+RDAP returns structured data with explicit redaction markers. Instead of `Registrant Email: REDACTED FOR PRIVACY` in plaintext, you get:
+
+```json
+{
+  "objectClassName": "entity",
+  "roles": ["registrant"],
+  "vcardArray": ["vcard", [
+    ["version", {}, "text", "4.0"],
+    ["fn", {}, "text", ""],
+    ["adr", {}, "text", ["", "", "", "", "", "", "US"]]
+  ]],
+  "remarks": [{
+    "title": "REDACTED FOR PRIVACY",
+    "type": "object redacted due to authorization"
+  }]
+}
+```
+
+The `remarks` field tells you explicitly that data has been hidden, why, and (in some implementations) which fields. Tools that consume RDAP can render a clear "GDPR redacted" notice rather than guessing. Most modern WHOIS lookup sites — including this one — use RDAP first and fall back to legacy port-43 WHOIS only if the registry doesn't support RDAP yet.
+
+## How to read a redacted record
+
+When you run a domain through this site's lookup, you'll see fields shown as `(hidden)` rather than blank. We do this intentionally: blank fields could mean "no data exists", "data exists but is redacted", or "the parser failed". `(hidden)` is unambiguous — the data was returned redacted. There's a small explainer note on every result page reminding you that GDPR is the cause for individual registrants and that no error has occurred.
+
+If you actually need to contact a registrant — for a trademark complaint, a security disclosure, or a legitimate business reason — most registrars expose a contact-form URL in the RDAP response. The form forwards your message without exposing the registrant's email. Some accept abuse complaints directly via the published abuse-contact field, which remained mandatory and unredacted post-GDPR.
+
+For law enforcement and certain accredited researchers, ICANN runs the **Registration Data Request Service (RDRS)**, where validated requests can recover the underlying data. It's not a free-for-all replacement — each request is logged, scoped, and reviewable. But it preserves a path for legitimate investigative work.
+
+## The takeaway
+
+The data you'll get from a 2026 WHOIS lookup is a fraction of what 2017 returned. That's not a tool failure — it's the tool reflecting a deliberate policy shift toward registrant privacy. For most legitimate uses (verifying a registrar, checking domain age, reading nameservers, checking expiry), the public fields are sufficient. For the 1% of cases that need contact data, the contact-form path or RDRS is the legitimate route.
+
+If you're registering your own domain today, GDPR-style redaction is opt-in for you regardless of jurisdiction at most modern registrars (Porkbun, Cloudflare, Namecheap, Hostinger all default to private). Your name and email aren't on the public record unless you specifically uncheck the privacy option. Use it.

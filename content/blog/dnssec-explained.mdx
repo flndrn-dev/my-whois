@@ -1,0 +1,70 @@
+---
+title: "How DNSSEC actually works (and why most domains skip it)"
+description: "DNSSEC adds cryptographic signatures to DNS responses so a resolver can verify the answer hasn't been tampered with. Here's the mechanism, the math, and why adoption stalled at ~5% of zones in 2026."
+publishedAt: "2026-05-03"
+tags: ["dns", "security", "infrastructure"]
+---
+
+When you type `my-whois.com` into a browser, your computer asks a recursive DNS resolver "what's the IP for this hostname?" and the resolver eventually returns an A record. By default, that answer travels over UDP, in plaintext, and is trusted on receipt. If anyone along the path injects a different IP — a hostile coffee-shop router, a compromised ISP resolver, a state-level adversary — your browser has no way to know.
+
+DNSSEC was designed in the late 1990s to fix this. Twenty-five years later, fewer than one in twenty domains has it enabled. The mechanism is sound. The economics aren't.
+
+## What DNSSEC actually is
+
+DNSSEC adds **digital signatures** to DNS records. When you enable it on your zone, your authoritative nameserver signs every response with a private key. The matching public key is published in your zone as a `DNSKEY` record. A signature appears alongside each record set as an `RRSIG`.
+
+A validating resolver fetches both the answer and its signature, then verifies the math: does this signature, when checked against this public key, prove that the answer has not been altered since the authoritative nameserver signed it? If yes, the answer is authentic. If no, the resolver returns SERVFAIL and the lookup fails.
+
+The chain of trust extends upward. Your zone's `DNSKEY` is itself signed — by your *parent* zone (the TLD). That signature is published in the parent as a `DS` record (Delegation Signer), which contains a hash of your DNSKEY. When a resolver looks you up, it walks the chain: it asks the root for the TLD's DS record, the TLD for your DS record, and your zone for the actual answer. Each link is cryptographically signed by the link above. The root zone's keys are signed by IANA's offline signing ceremony, which happens four times a year in armoured rooms with two locked safes. That ceremony is the foundation of internet-wide trust — and it's a remarkable bit of choreography to read about if you're curious.
+
+## What it does and doesn't protect
+
+DNSSEC protects the **integrity** of DNS responses. It guarantees the answer your resolver receives is exactly what your authoritative nameserver published. That's it.
+
+It does not encrypt DNS traffic. Anyone watching the network can still see what hostnames you're querying. (DNS over HTTPS — DoH — solves the privacy side; the two are complementary.)
+
+It does not protect against compromise of the authoritative nameserver itself. If your registrar or DNS host is breached and the attacker can publish new signed records, DNSSEC validates the new records as authentic. The signatures only prove "this came from the authoritative source", not "this is the answer you wanted".
+
+It does not prevent typosquatting, phishing on lookalike domains, or any application-layer attack. DNSSEC is purely a transport-integrity layer for DNS.
+
+## Why adoption is stuck around 5%
+
+For two decades the curve has barely moved. The reasons:
+
+1. **Operational complexity.** Signing a zone is straightforward. Rotating keys is not. A botched rollover takes the entire domain offline — every DNS lookup returns SERVFAIL until the new keys propagate. Resolver caches make the failure window worse. Most ops teams rationally decide the risk-adjusted cost is not worth the marginal benefit.
+
+2. **Registrar friction.** To enable DNSSEC you must publish a `DS` record at the parent zone — which means your registrar's interface needs to expose a DS-record field, ideally with automated rollover. Many registrars still don't, or hide the option behind an enterprise tier. Cloudflare, Porkbun, and Hostinger all expose it cleanly; some legacy registrars still ask you to email support.
+
+3. **Negative caching.** When a DNSSEC misconfiguration occurs (expired signatures, DS-DNSKEY mismatch, NSEC inconsistency), resolvers cache the SERVFAIL. Even after you fix it, large fractions of users keep seeing failures for hours. The asymmetry of "cheap to break, slow to recover" is unforgiving.
+
+4. **Diminishing returns.** Most application-layer trust now lives in TLS. Your browser pins certificates, validates chains against public CAs, and uses HSTS to require HTTPS. If an attacker rewrites the DNS answer, they still can't present a valid certificate for the original hostname (unless they also break a CA, which is a much higher bar). For most websites, TLS already covers the integrity gap that DNSSEC was designed to close.
+
+## When it actually matters
+
+DNSSEC remains genuinely useful for:
+
+- **Email infrastructure**, especially MTA-STS and DANE (DNS-Based Authentication of Named Entities). DANE lets a sender pin a TLS certificate via DNS — but only works if DNS itself is trustworthy, which means DNSSEC is a hard prerequisite. If you operate mail servers and care about active interception, DNSSEC is on the path.
+- **High-value financial / governmental targets** where regulations or threat models require defence-in-depth.
+- **Anything where the resolver-to-authoritative path crosses adversarial networks** that you can't otherwise audit.
+
+For a typical SaaS landing page or marketing site? Skip it. The 1–3% chance of a botched rollover taking the site offline outweighs the marginal protection.
+
+## How to check if a domain has it
+
+Run any domain through this site's lookup. The result page surfaces DNSSEC status alongside SSL and DNS records — green if enabled and validating, off if not. The Health Score docks 15 points for missing DNSSEC, but that's a soft signal: a non-DNSSEC domain isn't broken, it just hasn't opted into the extra layer.
+
+You can also check with `dig`:
+
+```
+dig +dnssec my-whois.com
+```
+
+If you see `RRSIG` records in the answer section and the `ad` flag (authenticated data) is set in the header, you're getting validated DNSSEC responses. If not, either the domain doesn't have DNSSEC or your resolver doesn't validate it (most public resolvers including 1.1.1.1 and 8.8.8.8 do).
+
+## The practical recommendation
+
+If you're standing up a new domain on a registrar that supports it (Cloudflare, Porkbun, Hostinger, Namecheap), enabling DNSSEC takes one click and a wait for the DS record to propagate. The downside is small if your registrar handles key rollover automatically.
+
+If you're managing an established production zone with traffic that depends on DNS reliability — and your registrar's DNSSEC tooling is anything less than fully automated — the engineering effort to implement it safely usually doesn't clear the bar over what TLS already gives you. That's the math behind the 5% adoption number, not laziness.
+
+The alternative gain isn't zero — it's the email-and-DANE story above, plus a small amount of defence-in-depth. For most sites, "small amount" is what gets weighed against "site goes down for a day if the rollover breaks". And most sites pick the uptime.

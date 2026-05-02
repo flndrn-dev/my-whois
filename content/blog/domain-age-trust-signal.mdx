@@ -1,0 +1,62 @@
+---
+title: "Domain age as a trust signal — when it matters and when it doesn't"
+description: "Old domains rank better in Google. New domains get marked as suspicious by spam filters. Both claims are oversimplified. Here's what domain age actually predicts and what it doesn't."
+publishedAt: "2026-05-03"
+tags: ["seo", "deliverability", "trust"]
+---
+
+Open any SEO blog and you'll find variations of the same advice: "older domains rank better, so buy an aged expired domain to skip the sandbox." Open any deliverability documentation and you'll find a related claim: "domains under 30 days old are filtered as suspicious, so buy a domain ahead of your launch." Both of these contain a kernel of truth wrapped in confused causality. Here's what's actually going on.
+
+## What domain age actually correlates with
+
+Domain age — the number of years between the domain's creation date and today — is a public fact, recorded in the WHOIS / RDAP `Creation Date` field and visible to anyone. Search engines, email reputation services, and security scanners all read it. They use it as one signal among many.
+
+The signal is statistically meaningful in two directions:
+
+**Older domains, on average, behave less like spam.** A domain registered in 2008 and continuously renewed through 2026 has accrued eighteen years of activity history. If it had been used for spam, it would likely have been flagged years ago. Its very persistence is evidence of legitimacy. There are exceptions — long-running domains do get sold and repurposed — but the prior is real.
+
+**Newly-registered domains over-index for spam and abuse.** Roughly half of all newly-registered .com domains are abandoned within the first year — many never receive content, many were registered for short-lived spam campaigns, many were typo-squats abandoned after a Google takedown notice. The base rate of abuse for a 7-day-old domain is genuinely higher than for a 7-year-old one. So filtering "extra suspicious for the first 30 days" has a defensible signal-to-noise basis.
+
+Both observations are true. Neither implies what people tend to conclude.
+
+## What people incorrectly conclude
+
+> "Old domains rank better in Google."
+
+Google has stated repeatedly that domain age in itself is not a ranking factor. The correlation people observe is between **age and accumulated trust signals** — backlinks from authoritative sources, consistent quality content, brand searches, dwell time, low pogo-sticking. An eighteen-year-old domain has had eighteen years to accumulate these signals; a six-week-old one hasn't. The ranking advantage comes from the signals, not the age.
+
+This matters because the SEO black-market is built around the misunderstanding. Companies sell expired domains with "high authority" — meaning the domain happens to have backlinks from prior owners. Buy the domain, redirect the URL, inherit the link equity. Sometimes this works; often it doesn't, because Google's algorithms flag sudden ownership/topic shifts on aged domains and devalue the prior backlinks. The "buy aged domain to rank faster" strategy has diminishing returns and increasing risk year over year.
+
+The honest signal: an aged domain you've owned and built consistently is a real asset. An aged domain you bought yesterday that previously sold supplements but now sells SaaS is barely worth its renewal cost.
+
+> "New domains get filtered by spam filters for 30 days."
+
+This one is closer to true but still mischaracterized. Most modern filters (Gmail, Microsoft, Apple Mail, Postfix-based MTAs running rspamd) factor domain age into a composite score. A 7-day-old sender domain doesn't auto-fail; it just has less margin to absorb other negative signals (missing SPF, weak DMARC, low engagement, suspicious content patterns).
+
+A new domain with full SPF + DKIM + DMARC + a clean dedicated IP + warmed sending volume + good engagement metrics will deliver fine from week one. A new domain with broken SPF and bulk-blast volume will be filtered, but it would also be filtered if it were three years old.
+
+The "wait 30 days before sending" advice is overcautious. The actual recommendation: set up authentication completely, warm volume gradually (start with high-engagement transactional traffic, then add bulk), and the age penalty becomes negligible within the first two weeks.
+
+## Where domain age genuinely matters
+
+A few cases where age is a meaningful, hard-to-fake signal:
+
+1. **Brand acquisition due diligence.** When someone is trying to sell you a domain at a six-figure premium based on its age, the WHOIS creation date is verifiable evidence. Old domain = old domain. Compare against the asking price.
+
+2. **Phishing detection at scale.** Aggregating across millions of inbound URLs, "registered in the past 48 hours" is a strong predictor of phishing. Browsers and email scanners use this for in-real-time risk scoring. Individual users don't think about it; the systems do.
+
+3. **Trademark and prior-use disputes.** If two parties claim a brand, the older domain is one piece of evidence (not dispositive — actual commercial use matters more — but a piece).
+
+4. **Investor and acquirer signals.** A startup operating on a 12-year-old `.com` they've owned the whole time reads as deliberate brand investment. Operating on a `.xyz` registered last month reads as scrappy. Both are fine; both communicate something.
+
+5. **Internet archaeology.** When researching the history of a project, organization, or person, the WHOIS creation date plus historical Wayback Machine snapshots give a reliable timeline. Domain age anchors the record.
+
+## What we surface on the lookup
+
+This site's lookup shows domain age live, ticking by the second, computed from the creation date in the registry's RDAP response. We also factor it into the Health Score: a domain expiring within 90 days docks 25 points, but registration date itself doesn't directly affect the score because as discussed, age in isolation isn't a quality signal — it's a contextual one.
+
+If you're evaluating a domain you might buy, the live counter is the thing to look at. Round numbers tell stories: a domain registered exactly two days ago is an active stake-out by someone; a domain consistently renewed for fifteen years is a long-held asset. Read the date, then look at what the domain actually serves.
+
+## The take-home
+
+Domain age is a real signal but a weak one. It's a useful prior, easily overridden by direct evidence in either direction. Don't pay a premium for an old domain unless the actual reputation transfers. Don't worry about a new domain unless your authentication setup is also weak. And when you see the live age counter on this site, read it as one fact alongside the registrar, the SSL chain, the DNS records, and the tech stack — not as the deciding fact.

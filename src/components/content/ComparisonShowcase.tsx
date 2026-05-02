@@ -2,13 +2,15 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { COMPARISON_PAIRS, pairSlug } from "@/lib/data/comparison-pairs";
 import { POPULAR_TLDS_FOR_HOMEPAGE, getTld } from "@/lib/data/tlds";
+import { getAllPosts } from "@/lib/blog";
 
 const FEATURED_INDEXES = [0, 1, 2, 3, 6, 8];
 
-export function ComparisonShowcase() {
+export async function ComparisonShowcase() {
   const featured = FEATURED_INDEXES.map((i) => COMPARISON_PAIRS[i]).filter(
     Boolean,
   ) as [string, string][];
+  const posts = (await getAllPosts()).slice(0, 3);
   return (
     <section className="py-12 border-t border-border">
       <div className="flex items-end justify-between gap-6 flex-wrap">
@@ -67,14 +69,24 @@ export function ComparisonShowcase() {
           <h3 className="text-sm uppercase tracking-wide text-muted">
             Reading
           </h3>
-          <ul className="mt-3 space-y-2 text-muted text-sm">
-            <li>What goes into a healthy DNS setup</li>
-            <li>Reading an RDAP response, line by line</li>
-            <li>Why GDPR redacts most EU registrant data</li>
+          <ul className="mt-3 space-y-3 text-sm">
+            {posts.map((p) => (
+              <li key={p.slug}>
+                <Link
+                  href={`/blog/${p.slug}`}
+                  className="hover:text-accent transition-colors leading-snug inline-block"
+                >
+                  {p.title}
+                </Link>
+              </li>
+            ))}
           </ul>
-          <p className="mt-3 text-xs text-muted">
-            Long-form posts arrive once the indexer has settled in.
-          </p>
+          <Link
+            href="/blog"
+            className="mt-4 inline-flex items-center gap-2 text-xs uppercase tracking-wide text-muted hover:text-accent transition-colors"
+          >
+            All posts <ArrowRight className="size-3" />
+          </Link>
         </div>
       </div>
     </section>
