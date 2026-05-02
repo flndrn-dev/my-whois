@@ -65,11 +65,9 @@ export default async function DomainPage({
     throw err;
   }
 
-  if (process.env.INDEXNOW_KEY) {
-    void indexnowNotify([
-      `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://my-whois.com"}/${domain}`,
-    ]);
-  }
+  void indexnowNotify([
+    `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://my-whois.com"}/${domain}`,
+  ]);
 
   return (
     <PageWithSideAds wide>

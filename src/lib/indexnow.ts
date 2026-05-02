@@ -1,7 +1,12 @@
 const ENDPOINT = "https://api.indexnow.org/indexnow";
 
+// Default key matches /public/d2f1ce1be913e14b18a411ad07dd05f6.txt so IndexNow
+// works without env config. Override INDEXNOW_KEY only if you regenerate the
+// public ownership file too.
+const DEFAULT_INDEXNOW_KEY = "d2f1ce1be913e14b18a411ad07dd05f6";
+
 export async function indexnowNotify(urls: string[]): Promise<boolean> {
-  const key = process.env.INDEXNOW_KEY;
+  const key = process.env.INDEXNOW_KEY ?? DEFAULT_INDEXNOW_KEY;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://my-whois.com";
   if (!key || urls.length === 0) return false;
   const host = new URL(siteUrl).host;
