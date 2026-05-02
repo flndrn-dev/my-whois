@@ -40,6 +40,7 @@ export default function HomePage() {
       <AdSlot
         slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HEADER ?? ""}
         format="banner"
+        label="Header banner"
         reservedHeight={90}
         className="my-10"
       />
@@ -51,6 +52,7 @@ export default function HomePage() {
       <AdSlot
         slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER ?? ""}
         format="banner"
+        label="Footer banner"
         reservedHeight={90}
         className="my-10"
       />

@@ -67,6 +67,14 @@ export default async function ComparePage({
 
   return (
     <div className="container-content py-8 sm:py-10">
+      <AdSlot
+        slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HEADER ?? ""}
+        format="banner"
+        label="Header banner"
+        reservedHeight={90}
+        className="mb-8"
+      />
+
       <div className="mb-8">
         <p className="text-xs uppercase tracking-[0.2em] text-muted">
           domain comparison
@@ -81,6 +89,7 @@ export default async function ComparePage({
       <AdSlot
         slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ABOVE_RESULT ?? ""}
         format="banner"
+        label="Above-result banner"
         reservedHeight={90}
         className="mb-6"
       />
@@ -97,6 +106,14 @@ export default async function ComparePage({
         </div>
       )}
 
+      <AdSlot
+        slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MID_RESULT ?? ""}
+        format="native"
+        label="Mid-result native"
+        reservedHeight={250}
+        className="my-10"
+      />
+
       <div className="mt-10 max-w-2xl">
         <h2 className="font-display text-xl font-semibold mb-3">
           Compare another pair
@@ -107,6 +124,14 @@ export default async function ComparePage({
           and tech stack.
         </p>
       </div>
+
+      <AdSlot
+        slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER ?? ""}
+        format="banner"
+        label="Footer banner"
+        reservedHeight={90}
+        className="mt-10"
+      />
 
       <script
         type="application/ld+json"

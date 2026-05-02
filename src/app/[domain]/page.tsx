@@ -74,6 +74,14 @@ export default async function DomainPage({
 
   return (
     <div className="container-content py-8 sm:py-10">
+      <AdSlot
+        slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HEADER ?? ""}
+        format="banner"
+        label="Header banner"
+        reservedHeight={90}
+        className="mb-8"
+      />
+
       <div className="mb-6">
         <DomainInput defaultValue={domain} size="default" />
       </div>
@@ -81,6 +89,7 @@ export default async function DomainPage({
       <AdSlot
         slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ABOVE_RESULT ?? ""}
         format="banner"
+        label="Above-result banner"
         reservedHeight={90}
         className="mb-6"
       />
@@ -98,6 +107,7 @@ export default async function DomainPage({
           <AdSlot
             slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MID_RESULT ?? ""}
             format="native"
+            label="Mid-result native"
             reservedHeight={250}
             className="my-6"
           />
@@ -134,6 +144,7 @@ export default async function DomainPage({
           <AdSlot
             slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR ?? ""}
             format="rectangle"
+            label="Sidebar rectangle"
             reservedHeight={250}
             className="mt-6"
           />
@@ -141,6 +152,14 @@ export default async function DomainPage({
       </div>
 
       <AlternativesSection domain={domain} />
+
+      <AdSlot
+        slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER ?? ""}
+        format="banner"
+        label="Footer banner"
+        reservedHeight={90}
+        className="mt-10"
+      />
 
       <script
         type="application/ld+json"

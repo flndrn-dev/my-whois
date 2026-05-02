@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AdSlot } from "@/components/layout/AdSlot";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -9,6 +10,13 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <div className="container-content py-12 sm:py-16 max-w-3xl">
+      <AdSlot
+        slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_HEADER ?? ""}
+        format="banner"
+        label="Header banner"
+        reservedHeight={90}
+        className="mb-10"
+      />
       <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">
         Privacy Policy
       </h1>
@@ -102,6 +110,14 @@ export default function PrivacyPage() {
           be reflected by an updated revision date at the top of this page.
         </p>
       </div>
+
+      <AdSlot
+        slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER ?? ""}
+        format="banner"
+        label="Footer banner"
+        reservedHeight={90}
+        className="mt-12"
+      />
     </div>
   );
 }

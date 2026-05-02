@@ -11,23 +11,66 @@ declare global {
 type AdSlotProps = {
   slotId: string;
   format: "banner" | "rectangle" | "native";
+  /** Position label shown in the pre-approval placeholder (e.g., "Header", "Sidebar"). */
+  label?: string;
   className?: string;
   reservedHeight: number;
 };
 
 const FORMAT_CONFIG = {
-  banner: { adFormat: "horizontal", responsive: true },
-  rectangle: { adFormat: "rectangle", responsive: false },
+  banner: { adFormat: "horizontal", responsive: true, sizeHint: "728×90 desktop · 320×50 mobile" },
+  rectangle: { adFormat: "rectangle", responsive: false, sizeHint: "300×250" },
   native: {
     adFormat: "fluid",
     responsive: true,
     layoutKey: "-fb+5w+4e-db+86",
+    sizeHint: "responsive native",
   },
 } as const;
+
+function Placeholder({
+  className,
+  reservedHeight,
+  format,
+  label,
+  status,
+}: {
+  className: string;
+  reservedHeight: number;
+  format: AdSlotProps["format"];
+  label?: string;
+  status: "pre-approval" | "pending-slot";
+}) {
+  const config = FORMAT_CONFIG[format];
+  return (
+    <div
+      className={`ad-slot-placeholder rounded-lg border-2 border-dashed border-border/70 bg-surface/40 flex flex-col items-center justify-center gap-1 text-muted px-4 ${className}`}
+      style={{ minHeight: reservedHeight }}
+      role="complementary"
+      aria-label="Advertising placement"
+    >
+      <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-accent/80">
+        Google AdSense
+      </span>
+      <span className="text-xs font-medium text-foreground/70">
+        {label ?? "Ad placement"}
+      </span>
+      <span className="text-[11px] opacity-70">
+        {format} · {config.sizeHint}
+      </span>
+      <span className="text-[10px] opacity-50 italic">
+        {status === "pending-slot"
+          ? "Slot ID pending"
+          : "Reserved for advertising"}
+      </span>
+    </div>
+  );
+}
 
 export function AdSlot({
   slotId,
   format,
+  label,
   className = "",
   reservedHeight,
 }: AdSlotProps) {
@@ -54,19 +97,30 @@ export function AdSlot({
     return () => observer.disconnect();
   }, [enabled]);
 
-  // No AdSense configured at all → render nothing so empty placeholders
-  // don't leave dead space across the page in dev / pre-approval.
-  if (!clientId) return null;
+  // Pre-approval (no client ID) — show a visible labelled placeholder so
+  // both we and the AdSense reviewer can see where ads will land.
+  if (!clientId) {
+    return (
+      <Placeholder
+        className={className}
+        reservedHeight={reservedHeight}
+        format={format}
+        label={label}
+        status="pre-approval"
+      />
+    );
+  }
 
-  // AdSense is configured but this specific slot ID isn't yet — keep the
-  // reserved-height placeholder so the layout doesn't shift once the slot
-  // is filled in via env vars.
+  // AdSense configured but this specific slot ID isn't yet — same visible
+  // placeholder, different status caption.
   if (!slotId) {
     return (
-      <div
-        className={`ad-slot-placeholder ${className}`}
-        style={{ minHeight: reservedHeight }}
-        aria-hidden="true"
+      <Placeholder
+        className={className}
+        reservedHeight={reservedHeight}
+        format={format}
+        label={label}
+        status="pending-slot"
       />
     );
   }
