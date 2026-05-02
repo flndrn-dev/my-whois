@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Inter Tight", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Brand — dark (default) */
+  --color-background: #2b283a;
+  --color-foreground: #f7f7f7;
+  --color-surface: #373449;
+  --color-muted: #b7b7b7;
+  --color-border: #3f3d52;
+
+  --color-accent: #f5c842;
+  --color-accent-foreground: #2b283a;
+
+  --color-success: #3fb950;
+  --color-warning: #d29922;
+  --color-danger: #f85149;
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  --container-content: 72rem;
+
+  --animate-pulse-slow: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+  @keyframes pulse-slow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+}
+
+/* Light theme overrides — applied when .dark class is NOT present */
+:root {
+  color-scheme: light;
+  --color-background: #ffffff;
+  --color-foreground: #2b283a;
+  --color-surface: #f7f7f7;
+  --color-muted: #6b6b7b;
+  --color-border: #e3e3e3;
+  --color-success: #2da44e;
+  --color-warning: #bf8700;
+  --color-danger: #cf222e;
+}
+
+.dark {
+  color-scheme: dark;
+  --color-background: #2b283a;
+  --color-foreground: #f7f7f7;
+  --color-surface: #373449;
+  --color-muted: #b7b7b7;
+  --color-border: #3f3d52;
+  --color-success: #3fb950;
+  --color-warning: #d29922;
+  --color-danger: #f85149;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01", "ss03";
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+@layer components {
+  .container-content {
+    width: 100%;
+    max-width: var(--container-content);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .container-content {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+}
+
+/* Reserve digit width for tabular-nums spans to prevent layout shift */
+.digit-slot {
+  display: inline-block;
+  min-width: 0.62em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
