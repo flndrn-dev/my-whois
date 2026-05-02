@@ -4,6 +4,7 @@ import { AboutSection } from "@/components/content/AboutSection";
 import { PopularDomains } from "@/components/content/PopularDomains";
 import { ComparisonShowcase } from "@/components/content/ComparisonShowcase";
 import { PageWithSideAds } from "@/components/layout/PageWithSideAds";
+import { ContentBreakAd } from "@/components/layout/ContentBreakAd";
 import { FadeIn } from "@/components/ui/FadeIn";
 
 export default function HomePage() {
@@ -38,6 +39,9 @@ export default function HomePage() {
       </section>
 
       <AboutSection />
+
+      <ContentBreakAd />
+
       <PopularDomains />
       <ComparisonShowcase />
     </PageWithSideAds>

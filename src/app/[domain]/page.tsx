@@ -15,6 +15,7 @@ import { DnsRecordsTabs } from "@/components/lookup/DnsRecordsTabs";
 import { RawRdapDrawer } from "@/components/lookup/RawRdapDrawer";
 import { RedactionNotice } from "@/components/lookup/RedactionNotice";
 import { PageWithSideAds } from "@/components/layout/PageWithSideAds";
+import { ContentBreakAd } from "@/components/layout/ContentBreakAd";
 import { lookupDomain, DomainNotFoundError } from "@/lib/lookup";
 import { normalizeDomain } from "@/lib/validate-domain";
 import { domainPageJsonLd } from "@/lib/seo";
@@ -110,6 +111,8 @@ export default async function DomainPage({
           </div>
         </dl>
       </div>
+
+      <ContentBreakAd />
 
       <AlternativesSection domain={domain} />
 

@@ -1,11 +1,10 @@
 import type { ReactNode } from "react";
 import { AdSlot } from "./AdSlot";
 
-// Single source of truth for ad placement across every page.
-// 2 horizontal responsive banner ads: one above content, one below.
-// Banners are full-width (responsive) and adapt their height — no
-// sidebar rail. Component name is preserved to avoid churn across
-// every page that imports it.
+// Single source of truth for the always-on bottom ad. The second ad on
+// each page is placed inline at a natural content break — see
+// <ContentBreakAd /> and the page-level usages in app/page.tsx,
+// app/[domain]/page.tsx, app/compare/[slug]/page.tsx.
 
 type Props = {
   children: ReactNode;
@@ -16,14 +15,6 @@ type Props = {
 export function PageWithSideAds({ children, wide = false }: Props) {
   return (
     <div className="container-content py-8 sm:py-10">
-      <AdSlot
-        slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR_TOP ?? ""}
-        format="banner"
-        label="Top banner"
-        reservedHeight={120}
-        className="mb-8"
-      />
-
       <main className={`min-w-0 ${wide ? "" : "max-w-3xl mx-auto w-full"}`}>
         {children}
       </main>
@@ -33,7 +24,7 @@ export function PageWithSideAds({ children, wide = false }: Props) {
         format="banner"
         label="Bottom banner"
         reservedHeight={120}
-        className="mt-10"
+        className="mt-12"
       />
     </div>
   );

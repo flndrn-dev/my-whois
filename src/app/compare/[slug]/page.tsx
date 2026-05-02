@@ -4,6 +4,7 @@ import { DomainInput } from "@/components/lookup/DomainInput";
 import { ComparisonView } from "@/components/compare/ComparisonView";
 import { CompareTracker } from "@/components/lookup/CompareTracker";
 import { PageWithSideAds } from "@/components/layout/PageWithSideAds";
+import { ContentBreakAd } from "@/components/layout/ContentBreakAd";
 import { lookupDomain, DomainNotFoundError } from "@/lib/lookup";
 import type { DomainSnapshot } from "@/lib/types";
 import { normalizeDomain } from "@/lib/validate-domain";
@@ -88,6 +89,8 @@ export default async function ComparePage({
           . Try the individual lookups below.
         </div>
       )}
+
+      <ContentBreakAd />
 
       <div className="mt-10 max-w-2xl">
         <h2 className="font-display text-xl font-semibold mb-3">
