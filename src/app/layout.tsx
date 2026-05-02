@@ -60,14 +60,12 @@ export const metadata: Metadata = {
     title: "my whois — domain lookup with live age & health score",
     description:
       "Look up any domain. See its live age, health score, registrar, DNS records, SSL info, and tech stack — all on one page.",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "my whois" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "my whois — domain lookup with live age & health score",
     description:
       "Look up any domain. See its live age, health score, registrar, DNS records, SSL info, and tech stack — all on one page.",
-    images: ["/og.png"],
   },
   robots: { index: true, follow: true },
   alternates: { canonical: "/" },

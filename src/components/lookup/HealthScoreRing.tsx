@@ -7,6 +7,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import type { HealthScore } from "@/lib/types";
+import { trackEvent } from "@/lib/umami";
 
 const SIZE = 140;
 const STROKE = 12;
@@ -25,7 +26,7 @@ export function HealthScoreRing({ health }: { health: HealthScore }) {
 
   return (
     <TooltipProvider delayDuration={150}>
-      <Tooltip>
+      <Tooltip onOpenChange={(open) => { if (open) trackEvent("view_health_score", { score: health.score, tier: health.tier }); }}>
         <TooltipTrigger asChild>
           <div
             className="inline-flex flex-col items-center cursor-help"
@@ -72,7 +73,7 @@ export function HealthScoreRing({ health }: { health: HealthScore }) {
             </p>
           </div>
         </TooltipTrigger>
-        <TooltipContent className="!max-w-sm p-0">
+        <TooltipContent className="max-w-sm! p-0">
           <ul className="divide-y divide-border">
             {health.breakdown.map((b) => (
               <li

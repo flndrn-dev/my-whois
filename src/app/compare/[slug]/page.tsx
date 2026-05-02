@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { DomainInput } from "@/components/lookup/DomainInput";
 import { ComparisonView } from "@/components/compare/ComparisonView";
+import { CompareTracker } from "@/components/lookup/CompareTracker";
 import { AdSlot } from "@/components/layout/AdSlot";
 import { lookupDomain, DomainNotFoundError } from "@/lib/lookup";
 import type { DomainSnapshot } from "@/lib/types";
@@ -83,6 +84,8 @@ export default async function ComparePage({
         reservedHeight={90}
         className="mb-6"
       />
+
+      <CompareTracker a={aDomain} b={bDomain} />
 
       {a && b ? (
         <ComparisonView a={a} b={b} />

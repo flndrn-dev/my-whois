@@ -5,7 +5,8 @@ import { useState } from "react";
 import { ArrowRight, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { normalizeDomain } from "@/lib/validate-domain";
+import { normalizeDomain, getTld } from "@/lib/validate-domain";
+import { trackEvent } from "@/lib/umami";
 
 type Props = {
   defaultValue?: string;
@@ -28,6 +29,7 @@ export function DomainInput({ defaultValue = "", size = "lg", autoFocus }: Props
       return;
     }
     setError(null);
+    trackEvent("lookup_domain", { tld: getTld(normalized) });
     router.push(`/${normalized}`);
   }
 
