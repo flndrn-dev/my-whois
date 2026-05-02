@@ -21,15 +21,20 @@ export default function BulkPage() {
   return (
     <PageWithSideAds wide>
       <article className="max-w-5xl">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted">bulk</p>
-        <h1 className="mt-2 font-display text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight">
-          Bulk domain lookup.
+        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted">
+          <span className="text-accent">●</span> Bulk lookup
+        </p>
+        <h1 className="mt-5 font-display text-4xl sm:text-5xl md:text-[4.5rem] font-bold tracking-tight leading-[1.02]">
+          A hundred domains,{" "}
+          <span className="font-editorial italic font-normal text-accent">
+            one paste.
+          </span>
         </h1>
-        <p className="mt-5 text-lg text-muted leading-relaxed max-w-2xl">
+        <p className="mt-6 font-prose text-lg sm:text-xl text-muted leading-relaxed max-w-2xl">
           Paste up to 100 domains — one per line, comma-separated, or
-          whitespace-separated. We&rsquo;ll return registrar, age, expiry, health
-          score, SSL status, and DNSSEC for each in one go. Export the result
-          as CSV.
+          whitespace-separated. We&rsquo;ll return registrar, age, expiry,
+          health score, SSL status, and DNSSEC for each in one go. Export the
+          result as CSV.
         </p>
 
         <div className="mt-10">

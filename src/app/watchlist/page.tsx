@@ -22,13 +22,17 @@ export default function WatchlistPage() {
   return (
     <PageWithSideAds wide>
       <article className="max-w-3xl">
-        <p className="text-xs uppercase tracking-[0.2em] text-muted">
-          watchlist
+        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted">
+          <span className="text-accent">●</span> Watchlist
         </p>
-        <h1 className="mt-2 font-display text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight">
-          Get an email before any domain expires.
+        <h1 className="mt-5 font-display text-4xl sm:text-5xl md:text-[4.5rem] font-bold tracking-tight leading-[1.02]">
+          Get an email{" "}
+          <span className="font-editorial italic font-normal text-accent">
+            before
+          </span>{" "}
+          any domain expires.
         </h1>
-        <p className="mt-5 text-lg text-muted leading-relaxed">
+        <p className="mt-6 font-prose text-lg sm:text-xl text-muted leading-relaxed max-w-xl">
           Add a domain and your email. We send a heads-up 30, 14, and 7 days
           before the registration runs out. Free, no account, no marketing
           drip. Reply to any email to unsubscribe.

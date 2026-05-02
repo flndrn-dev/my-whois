@@ -1,5 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Inter_Tight, JetBrains_Mono } from "next/font/google";
+import {
+  Inter,
+  Inter_Tight,
+  JetBrains_Mono,
+  Instrument_Serif,
+  Newsreader,
+} from "next/font/google";
 import { Providers } from "./providers";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -22,6 +28,28 @@ const interTight = Inter_Tight({
 const jetbrains = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains",
+  display: "swap",
+});
+
+// Editorial display face — high-contrast serif used for blog post titles,
+// drop caps, italic accents on key marketing pages. Instrument Serif has a
+// distinctive italic that drives the "Field Notes" magazine identity.
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal", "italic"],
+  variable: "--font-serif-display",
+  display: "swap",
+});
+
+// Long-form reading face — variable optical-sizing serif. Used for blog
+// post body prose so the reading-mode UI is typographically distinct from
+// the lookup tool's UI typography.
+const newsreader = Newsreader({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-serif-prose",
   display: "swap",
 });
 
@@ -91,7 +119,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${interTight.variable} ${jetbrains.variable}`}
+      className={`${inter.variable} ${interTight.variable} ${jetbrains.variable} ${instrumentSerif.variable} ${newsreader.variable}`}
     >
       <head>
         {ADSENSE_CLIENT_ID ? (
@@ -111,7 +139,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd()) }}
         />
       </head>
-      <body className="min-h-dvh flex flex-col antialiased">
+      <body className="min-h-dvh flex flex-col antialiased grain-overlay">
         <Providers>
           <Header />
           <main className="flex-1">{children}</main>

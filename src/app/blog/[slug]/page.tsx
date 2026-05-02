@@ -45,66 +45,18 @@ export async function generateMetadata({
   };
 }
 
-const formatDate = (iso: string) =>
-  new Date(iso).toLocaleDateString("en-GB", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-
-const mdxComponents = {
-  h2: (props: React.ComponentProps<"h2">) => (
-    <h2
-      className="font-display text-2xl sm:text-3xl font-semibold tracking-tight mt-12 mb-4"
-      {...props}
-    />
-  ),
-  h3: (props: React.ComponentProps<"h3">) => (
-    <h3
-      className="font-display text-xl font-semibold tracking-tight mt-8 mb-3"
-      {...props}
-    />
-  ),
-  p: (props: React.ComponentProps<"p">) => (
-    <p className="my-5 text-base leading-relaxed" {...props} />
-  ),
-  ul: (props: React.ComponentProps<"ul">) => (
-    <ul className="my-5 list-disc list-outside pl-6 space-y-2" {...props} />
-  ),
-  ol: (props: React.ComponentProps<"ol">) => (
-    <ol className="my-5 list-decimal list-outside pl-6 space-y-2" {...props} />
-  ),
-  li: (props: React.ComponentProps<"li">) => (
-    <li className="leading-relaxed" {...props} />
-  ),
-  a: (props: React.ComponentProps<"a">) => (
-    <a
-      className="text-accent underline underline-offset-2 hover:no-underline"
-      {...props}
-    />
-  ),
-  blockquote: (props: React.ComponentProps<"blockquote">) => (
-    <blockquote
-      className="my-6 border-l-2 border-accent/60 pl-4 text-muted italic"
-      {...props}
-    />
-  ),
-  code: (props: React.ComponentProps<"code">) => (
-    <code
-      className="font-mono text-[0.9em] bg-surface/80 border border-border rounded px-1.5 py-0.5"
-      {...props}
-    />
-  ),
-  pre: (props: React.ComponentProps<"pre">) => (
-    <pre
-      className="my-6 overflow-x-auto rounded-lg border border-border bg-surface/60 p-4 text-sm font-mono leading-relaxed"
-      {...props}
-    />
-  ),
-  strong: (props: React.ComponentProps<"strong">) => (
-    <strong className="font-semibold text-foreground" {...props} />
-  ),
+const formatDate = (iso: string) => {
+  const d = new Date(iso);
+  const month = d.toLocaleDateString("en-GB", { month: "short" }).toUpperCase();
+  return `${month} ${d.getDate()}, ${d.getFullYear()}`;
 };
+
+const num = (n: number) => n.toString().padStart(2, "0");
+
+// Empty MDX components object — all styling lives in the .editorial-prose
+// class on the wrapper, so the underlying HTML elements pick up cohesive
+// editorial typography without per-element overrides.
+const mdxComponents = {};
 
 export default async function BlogPostPage({
   params,
@@ -117,75 +69,104 @@ export default async function BlogPostPage({
 
   void indexnowNotify([siteAbsoluteUrl(`/blog/${post.slug}`)]);
 
-  // Pull two adjacent posts for the "more reading" rail at the foot.
   const all = await getAllPosts();
-  const others = all.filter((p) => p.slug !== post.slug).slice(0, 3);
+  const others = all.filter((p) => p.slug !== post.slug).slice(0, 2);
+  const issueNumber = all.length - all.findIndex((p) => p.slug === post.slug);
 
   return (
     <PageWithSideAds wide>
-      <article className="max-w-3xl">
-        <div className="mb-2">
+      <article className="max-w-2xl mx-auto">
+        {/* Top tag-line — issue number + back link */}
+        <div className="flex items-baseline justify-between gap-6 pb-8 border-b border-border">
           <Link
             href="/blog"
-            className="text-xs uppercase tracking-[0.2em] text-muted hover:text-accent transition-colors"
+            className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted hover:text-accent transition-colors"
           >
-            ← back to blog
+            ← Field notes
           </Link>
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent">
+            No.&nbsp;{num(issueNumber)}
+          </span>
         </div>
 
-        <header className="mt-2">
-          <div className="text-xs uppercase tracking-[0.18em] text-muted">
-            {formatDate(post.publishedAt)} · {post.readingMinutes} min read
+        {/* Header — date eyebrow, big editorial title, italic description */}
+        <header className="pt-12 pb-10">
+          <div className="font-mono text-[11px] uppercase tracking-[0.25em] text-muted">
+            {formatDate(post.publishedAt)}
+            <span className="mx-2 text-border">/</span>
+            {post.readingMinutes} min read
           </div>
-          <h1 className="mt-3 font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
+
+          <h1 className="mt-6 font-editorial text-[clamp(2.5rem,7vw,4.5rem)] leading-[0.98] tracking-[-0.015em]">
             {post.title}
           </h1>
-          <p className="mt-4 text-lg text-muted leading-relaxed">
+
+          <p className="mt-8 font-prose italic text-xl sm:text-2xl text-muted leading-[1.45] max-w-xl">
             {post.description}
           </p>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {post.tags.map((tag) => (
-              <span
-                key={tag}
-                className="text-[11px] font-mono uppercase tracking-wide text-muted bg-surface/60 border border-border rounded px-2 py-0.5"
-              >
-                {tag}
+
+          <div className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
+            <span>Filed under</span>
+            {post.tags.map((tag, i) => (
+              <span key={tag} className="flex items-center">
+                <span className="text-accent">{tag}</span>
+                {i < post.tags.length - 1 ? (
+                  <span className="ml-3 text-border">·</span>
+                ) : null}
               </span>
             ))}
           </div>
         </header>
 
-        <div className="mt-10 prose-invert">
+        {/* Decorative rule before body */}
+        <div className="editorial-rule" aria-hidden="true">
+          <span className="ornament">✦</span>
+        </div>
+
+        {/* Body prose */}
+        <div className="editorial-prose">
           <MDXRemote source={post.content} components={mdxComponents} />
         </div>
 
-        <ContentBreakAd className="mt-12" />
+        {/* Closing decorative rule */}
+        <div className="editorial-rule mt-16" aria-hidden="true">
+          <span className="ornament">∎</span>
+        </div>
 
+        <ContentBreakAd className="my-12" />
+
+        {/* "Continue reading" — editorial 2-up */}
         {others.length > 0 ? (
-          <section className="mt-12 border-t border-border pt-10">
-            <h2 className="font-display text-xl font-semibold tracking-tight">
-              More reading
-            </h2>
-            <ul className="mt-4 space-y-4">
-              {others.map((p) => (
-                <li key={p.slug}>
+          <section className="mt-12 pt-10 border-t border-border">
+            <div className="font-mono text-[11px] uppercase tracking-[0.25em] text-muted mb-8">
+              Continue reading
+            </div>
+            <div className="grid sm:grid-cols-2 gap-10">
+              {others.map((p, i) => {
+                const orderNum =
+                  all.length - all.findIndex((x) => x.slug === p.slug);
+                return (
                   <Link
+                    key={p.slug}
                     href={`/blog/${p.slug}`}
-                    className="block group"
+                    className="group block"
                   >
-                    <div className="text-xs uppercase tracking-[0.18em] text-muted">
-                      {formatDate(p.publishedAt)} · {p.readingMinutes} min
+                    <div className="flex items-baseline gap-3 font-mono text-[10px] uppercase tracking-[0.25em] text-muted">
+                      <span className="text-accent">No.&nbsp;{num(orderNum)}</span>
+                      <span className="text-border">/</span>
+                      <span>{formatDate(p.publishedAt)}</span>
                     </div>
-                    <div className="mt-1 font-display text-lg font-semibold group-hover:text-accent transition-colors">
+                    <h3 className="mt-3 font-editorial text-[clamp(1.35rem,2.5vw,1.75rem)] leading-[1.1] tracking-tight group-hover:text-accent transition-colors">
                       {p.title}
-                    </div>
-                    <div className="mt-1 text-sm text-muted">
+                    </h3>
+                    <p className="mt-3 font-prose italic text-sm text-muted leading-relaxed">
                       {p.description}
-                    </div>
+                    </p>
+                    {i < others.length - 1 ? null : null}
                   </Link>
-                </li>
-              ))}
-            </ul>
+                );
+              })}
+            </div>
           </section>
         ) : null}
       </article>
