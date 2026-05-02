@@ -69,6 +69,7 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
   alternates: { canonical: "/" },
   verification: {
+    yandex: "b7d65637565b339f",
     other: {
       "msvalidate.01": "BDE68623F518ADD3CC5723A942105E1C",
     },
