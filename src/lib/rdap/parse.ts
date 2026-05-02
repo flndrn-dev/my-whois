@@ -5,6 +5,7 @@ type RdapEntity = {
   vcardArray?: unknown[];
   entities?: RdapEntity[];
   publicIds?: { type?: string; identifier?: string }[];
+  links?: { rel?: string; href?: string; value?: string }[];
 };
 
 type RdapNameserver = {
@@ -25,7 +26,9 @@ type RdapResponse = {
   entities?: RdapEntity[];
   nameservers?: RdapNameserver[];
   secureDNS?: { delegationSigned?: boolean };
-  notices?: { title?: string; description?: string[] }[];
+  notices?: { title?: string; description?: string[]; links?: { href?: string }[] }[];
+  links?: { rel?: string; href?: string }[];
+  port43?: string;
 };
 
 function findEvent(events: RdapEvent[] | undefined, action: string) {
@@ -46,20 +49,52 @@ function vcardField(vcard: unknown[] | undefined, key: string): string | null {
   return null;
 }
 
-function findRegistrarName(entities: RdapEntity[] | undefined): string | null {
+function findRegistrarEntity(
+  entities: RdapEntity[] | undefined,
+): RdapEntity | null {
   if (!entities) return null;
   for (const e of entities) {
-    if (e.roles?.includes("registrar")) {
-      const name = vcardField(e.vcardArray, "fn");
-      if (name) return name;
-      const id = e.publicIds?.find((p) => p.type === "IANA Registrar ID")
-        ?.identifier;
-      if (id) return `Registrar IANA #${id}`;
-    }
-    const nested = findRegistrarName(e.entities);
+    if (e.roles?.includes("registrar")) return e;
+    const nested = findRegistrarEntity(e.entities);
     if (nested) return nested;
   }
   return null;
+}
+
+function findAbuseUrl(entities: RdapEntity[] | undefined): string | null {
+  if (!entities) return null;
+  for (const e of entities) {
+    if (e.roles?.includes("abuse")) {
+      const url = vcardField(e.vcardArray, "url");
+      if (url) return url;
+      const link = e.links?.find((l) => l.href)?.href;
+      if (link) return link;
+    }
+    const nested = findAbuseUrl(e.entities);
+    if (nested) return nested;
+  }
+  return null;
+}
+
+function findRegistrarUrl(entity: RdapEntity | null): string | null {
+  if (!entity) return null;
+  // Prefer vCard "url" property — common in modern RDAP
+  const vcardUrl = vcardField(entity.vcardArray, "url");
+  if (vcardUrl) return vcardUrl;
+  // Fall back to entity.links with rel=about / rel=related
+  const linkUrl =
+    entity.links?.find((l) => l.rel === "about")?.href ??
+    entity.links?.find((l) => l.rel === "related")?.href ??
+    entity.links?.[0]?.href ??
+    null;
+  return linkUrl;
+}
+
+function findRegistrarIanaId(entity: RdapEntity | null): string | null {
+  if (!entity) return null;
+  const id = entity.publicIds?.find((p) => p.type === "IANA Registrar ID")
+    ?.identifier;
+  return id ?? null;
 }
 
 function entityHasRole(entities: RdapEntity[] | undefined, role: string) {
@@ -77,9 +112,21 @@ export function parseRdap(raw: unknown): Omit<DomainInfo, "source"> {
   const nameservers = (r.nameservers ?? [])
     .map((n) => (n.unicodeName ?? n.ldhName ?? "").toLowerCase())
     .filter(Boolean);
+  const registrarEntity = findRegistrarEntity(r.entities);
+  const registrarName = registrarEntity
+    ? vcardField(registrarEntity.vcardArray, "fn")
+    : null;
+  const registrarIanaId = findRegistrarIanaId(registrarEntity);
   return {
     domain,
-    registrar: findRegistrarName(r.entities),
+    registrar:
+      registrarName ??
+      (registrarIanaId ? `Registrar IANA #${registrarIanaId}` : null),
+    registrarUrl: findRegistrarUrl(registrarEntity),
+    registrarIanaId,
+    abuseUrl: findAbuseUrl(r.entities),
+    whoisServer: r.port43 ?? null,
+    rdapServer: null, // filled by query layer
     status: r.status ?? [],
     registrationDate: findEvent(r.events, "registration"),
     expirationDate: findEvent(r.events, "expiration"),

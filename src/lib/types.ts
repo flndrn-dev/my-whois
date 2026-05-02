@@ -35,6 +35,11 @@ export type TechStackChip = {
 export type DomainInfo = {
   domain: string;
   registrar: string | null;
+  registrarUrl: string | null;
+  registrarIanaId: string | null;
+  abuseUrl: string | null;
+  whoisServer: string | null;
+  rdapServer: string | null;
   status: string[];
   registrationDate: string | null;
   expirationDate: string | null;

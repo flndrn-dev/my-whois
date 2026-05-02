@@ -1,4 +1,5 @@
 import { DomainInput } from "@/components/lookup/DomainInput";
+import { VisitorIp } from "@/components/lookup/VisitorIp";
 import { AboutSection } from "@/components/content/AboutSection";
 import { PopularDomains } from "@/components/content/PopularDomains";
 import { ComparisonShowcase } from "@/components/content/ComparisonShowcase";
@@ -28,6 +29,7 @@ export default function HomePage() {
         <div className="mt-8 flex justify-center">
           <DomainInput autoFocus />
         </div>
+        <VisitorIp />
       </section>
 
       <AdSlot

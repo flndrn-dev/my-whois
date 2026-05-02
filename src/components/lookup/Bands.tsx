@@ -1,4 +1,4 @@
-import { ShieldCheck, ShieldAlert, ShieldX, Calendar, Server, Globe, Building2 } from "lucide-react";
+import { ShieldCheck, ShieldAlert, ShieldX, Calendar, Server, Globe, Building2, ExternalLink, Info, Database } from "lucide-react";
 import type { DomainSnapshot } from "@/lib/types";
 
 function Band({
@@ -40,7 +40,34 @@ function daysFromNow(iso: string | null) {
 export function RegistrarBand({ info }: { info: DomainSnapshot["info"] }) {
   return (
     <Band icon={<Building2 />} label="Registrar">
-      <div className="font-mono text-sm">{info.registrar ?? "(hidden)"}</div>
+      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <span className="font-mono text-sm">{info.registrar ?? "(hidden)"}</span>
+        {info.registrarUrl ? (
+          <a
+            href={info.registrarUrl}
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            className="inline-flex items-center gap-1 text-xs text-muted hover:text-foreground transition-colors"
+          >
+            visit site <ExternalLink className="size-3" />
+          </a>
+        ) : null}
+        {info.registrarIanaId ? (
+          <span className="text-xs text-muted font-mono">
+            IANA #{info.registrarIanaId}
+          </span>
+        ) : null}
+      </div>
+      {info.abuseUrl ? (
+        <a
+          href={info.abuseUrl}
+          target="_blank"
+          rel="noopener noreferrer nofollow"
+          className="mt-1 inline-flex items-center gap-1 text-xs text-muted hover:text-foreground transition-colors"
+        >
+          report abuse <ExternalLink className="size-3" />
+        </a>
+      ) : null}
       {info.status.length > 0 ? (
         <div className="flex flex-wrap gap-1.5 mt-2">
           {info.status.map((s) => (
@@ -57,6 +84,61 @@ export function RegistrarBand({ info }: { info: DomainSnapshot["info"] }) {
   );
 }
 
+function ageText(iso: string | null) {
+  if (!iso) return null;
+  const start = new Date(iso);
+  if (Number.isNaN(start.getTime())) return null;
+  const ms = Date.now() - start.getTime();
+  if (ms < 0) return null;
+  const days = Math.floor(ms / (1000 * 60 * 60 * 24));
+  const years = Math.floor(days / 365.25);
+  const remDays = days - Math.floor(years * 365.25);
+  if (years === 0) return `${days} days old`;
+  return `${years} year${years === 1 ? "" : "s"}, ${remDays} day${remDays === 1 ? "" : "s"} old`;
+}
+
+export function SourceBand({ info }: { info: DomainSnapshot["info"] }) {
+  if (!info.rdapServer && !info.whoisServer && info.source === "unknown")
+    return null;
+  return (
+    <Band icon={<Database />} label="Data source">
+      <dl className="grid sm:grid-cols-2 gap-3 sm:gap-6 text-sm">
+        <div>
+          <dt className="text-xs text-muted uppercase tracking-wide">
+            Protocol
+          </dt>
+          <dd className="font-mono uppercase">{info.source}</dd>
+        </div>
+        {info.rdapServer ? (
+          <div>
+            <dt className="text-xs text-muted uppercase tracking-wide">
+              RDAP server
+            </dt>
+            <dd className="font-mono break-all">
+              <a
+                href={info.rdapServer}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                className="hover:text-foreground transition-colors"
+              >
+                {info.rdapServer.replace(/^https?:\/\//, "")}
+              </a>
+            </dd>
+          </div>
+        ) : null}
+        {info.whoisServer ? (
+          <div>
+            <dt className="text-xs text-muted uppercase tracking-wide">
+              WHOIS server
+            </dt>
+            <dd className="font-mono break-all">{info.whoisServer}</dd>
+          </div>
+        ) : null}
+      </dl>
+    </Band>
+  );
+}
+
 export function DatesBand({ info }: { info: DomainSnapshot["info"] }) {
   const expiryDays = daysFromNow(info.expirationDate);
   const expiryColor =
@@ -67,8 +149,15 @@ export function DatesBand({ info }: { info: DomainSnapshot["info"] }) {
         : expiryDays < 30
           ? "text-warning"
           : "text-success";
+  const age = ageText(info.registrationDate);
   return (
     <Band icon={<Calendar />} label="Dates">
+      {age ? (
+        <p className="text-sm text-muted mb-3">
+          <Info className="inline size-3.5 mr-1 mb-0.5" />
+          {age}
+        </p>
+      ) : null}
       <dl className="grid sm:grid-cols-3 gap-3 sm:gap-6 text-sm">
         <div>
           <dt className="text-xs text-muted uppercase tracking-wide">

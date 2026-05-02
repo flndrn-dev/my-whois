@@ -17,7 +17,9 @@ export class RdapUnavailableError extends Error {
   }
 }
 
-async function fetchOne(server: string, domain: string): Promise<unknown> {
+type RdapResult = { server: string; data: unknown };
+
+async function fetchOne(server: string, domain: string): Promise<RdapResult> {
   const base = server.replace(/\/$/, "");
   const url = `${base}/domain/${encodeURIComponent(domain)}`;
   const ctrl = new AbortController();
@@ -33,13 +35,13 @@ async function fetchOne(server: string, domain: string): Promise<unknown> {
     });
     if (res.status === 404) throw new RdapNotFoundError(domain);
     if (!res.ok) throw new Error(`RDAP HTTP ${res.status} from ${base}`);
-    return await res.json();
+    return { server: base, data: await res.json() };
   } finally {
     clearTimeout(timer);
   }
 }
 
-export async function queryRdap(domain: string): Promise<unknown> {
+export async function queryRdap(domain: string): Promise<RdapResult> {
   const tld = getTld(domain);
   const servers = await getRdapServersForTld(tld);
   if (servers.length === 0) throw new RdapUnavailableError(tld);

@@ -48,7 +48,7 @@ Standard WHOIS data (registrar, dates, status, nameservers, DNSSEC, raw RDAP) is
 ## Hard Rules — never violate
 
 - **No email addresses** in UI, logs, or public-facing pages. WHOIS responses with emails must be **redacted server-side** before reaching the client. Display `(hidden)` placeholder.
-- **No IP addresses** in UI, logs, or public-facing pages. Visitor IPs never logged. Resolved IPs from RDAP/WHOIS responses are stripped server-side. Nameserver hostnames are fine; their resolved IPs are not.
+- **No IP addresses** in UI, logs, or public-facing pages — with one **owner-approved exception for this project**: the visitor's *own* IP MAY be shown back to that visitor in the hero (server-fetched per request from `x-forwarded-for` / `x-real-ip`, never logged or persisted). Third-party IPs from registry data (registrant, nameservers, A/AAAA resolved targets) are still stripped server-side. Nameserver hostnames are fine; their resolved IPs are not.
 - **GDPR-aware presentation** — most EU TLDs return masked registrant data. Show `(hidden)` and explain politely with a small note that GDPR redacts personal data — never imply the tool is broken.
 - **Cookieless analytics** — Umami self-hosted, no cookie banners.
 - **Zero PII storage** — no Postgres, no session linkage. In-memory cache by domain key only (or Convex if needed for compounding popular-lookups data).

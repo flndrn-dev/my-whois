@@ -7,8 +7,10 @@ import {
   DatesBand,
   NameserversBand,
   SslInfoBand,
+  SourceBand,
   TechStackBand,
 } from "@/components/lookup/Bands";
+import { AlternativesSection } from "@/components/content/AlternativesSection";
 import { DnsRecordsTabs } from "@/components/lookup/DnsRecordsTabs";
 import { RawRdapDrawer } from "@/components/lookup/RawRdapDrawer";
 import { RedactionNotice } from "@/components/lookup/RedactionNotice";
@@ -102,6 +104,7 @@ export default async function DomainPage({
 
           <SslInfoBand ssl={snapshot.ssl} />
           <TechStackBand tech={snapshot.tech} />
+          <SourceBand info={snapshot.info} />
           <div className="pt-6">
             <RawRdapDrawer raw={snapshot.info.raw} />
           </div>
@@ -136,6 +139,8 @@ export default async function DomainPage({
           </div>
         </aside>
       </div>
+
+      <AlternativesSection domain={domain} />
 
       <script
         type="application/ld+json"

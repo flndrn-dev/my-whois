@@ -37,10 +37,10 @@ async function fetchRegistrationViaRdap(
   domain: string,
 ): Promise<DomainInfo | null> {
   try {
-    const raw = await queryRdap(domain);
-    const redacted = redactDeep(raw);
+    const { server, data } = await queryRdap(domain);
+    const redacted = redactDeep(data);
     const parsed = parseRdap(redacted);
-    return { ...parsed, source: "rdap" };
+    return { ...parsed, rdapServer: server, source: "rdap" };
   } catch (err) {
     if (err instanceof RdapNotFoundError) throw new DomainNotFoundError(domain);
     return null;
@@ -62,6 +62,11 @@ async function fetchRegistrationViaWhois43(
     return {
       domain,
       registrar: parsed.registrar,
+      registrarUrl: null,
+      registrarIanaId: null,
+      abuseUrl: null,
+      whoisServer: null,
+      rdapServer: null,
       status: parsed.status,
       registrationDate: parsed.created,
       expirationDate: parsed.expires,
@@ -86,6 +91,11 @@ async function fetchRegistration(domain: string): Promise<DomainInfo> {
   return {
     domain,
     registrar: null,
+    registrarUrl: null,
+    registrarIanaId: null,
+    abuseUrl: null,
+    whoisServer: null,
+    rdapServer: null,
     status: [],
     registrationDate: null,
     expirationDate: null,
