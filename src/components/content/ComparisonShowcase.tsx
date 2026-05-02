@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { COMPARISON_PAIRS, pairSlug } from "@/lib/data/comparison-pairs";
+import { POPULAR_TLDS_FOR_HOMEPAGE, getTld } from "@/lib/data/tlds";
 
 const FEATURED_INDEXES = [0, 1, 2, 3, 6, 8];
 
@@ -44,16 +45,23 @@ export function ComparisonShowcase() {
           <h3 className="text-sm uppercase tracking-wide text-muted">
             Top TLDs
           </h3>
-          <ul className="mt-3 space-y-2 text-muted text-sm">
-            <li>.com — the legacy default</li>
-            <li>.io — startups and devtools</li>
-            <li>.ai — anything with a model attached</li>
-            <li>.sh — shell-flavoured side-projects</li>
-            <li>.dev — Google&rsquo;s HTTPS-only namespace</li>
+          <ul className="mt-3 space-y-2 text-sm">
+            {POPULAR_TLDS_FOR_HOMEPAGE.map((slug) => {
+              const t = getTld(slug);
+              if (!t) return null;
+              return (
+                <li key={slug}>
+                  <Link
+                    href={`/tld/${slug}`}
+                    className="hover:text-accent inline-flex items-baseline gap-2"
+                  >
+                    <span className="font-mono">.{slug}</span>
+                    <span className="text-muted">— {t.tagline}</span>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
-          <p className="mt-3 text-xs text-muted">
-            Per-TLD pages with stats and renewal economics ship in Phase 2.
-          </p>
         </div>
         <div>
           <h3 className="text-sm uppercase tracking-wide text-muted">

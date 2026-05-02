@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { indexnowNotify, siteAbsoluteUrl } from "@/lib/indexnow";
 import { POPULAR_DOMAINS } from "@/lib/data/popular-domains";
 import { COMPARISON_PAIRS, pairSlug } from "@/lib/data/comparison-pairs";
+import { TLDS } from "@/lib/data/tlds";
 
 export const dynamic = "force-dynamic";
 
@@ -19,6 +20,7 @@ export async function POST() {
     ...COMPARISON_PAIRS.map(([a, b]) =>
       siteAbsoluteUrl(`/compare/${pairSlug(a, b)}`),
     ),
+    ...TLDS.map((t) => siteAbsoluteUrl(`/tld/${t.tld}`)),
   ];
 
   const result = await indexnowNotify(urls);

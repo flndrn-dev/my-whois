@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { POPULAR_DOMAINS } from "@/lib/data/popular-domains";
 import { COMPARISON_PAIRS, pairSlug } from "@/lib/data/comparison-pairs";
+import { TLDS } from "@/lib/data/tlds";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://my-whois.com";
@@ -29,5 +30,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticEntries, ...popularEntries, ...compareEntries];
+  const tldEntries: MetadataRoute.Sitemap = TLDS.map((t) => ({
+    url: `${SITE_URL}/tld/${t.tld}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
+
+  return [
+    ...staticEntries,
+    ...popularEntries,
+    ...compareEntries,
+    ...tldEntries,
+  ];
 }
