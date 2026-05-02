@@ -78,7 +78,8 @@ export const viewport: Viewport = {
   ],
 };
 
-const ADSENSE_CLIENT_ID = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
+const ADSENSE_CLIENT_ID =
+  process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID ?? "ca-pub-3928224800312187";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

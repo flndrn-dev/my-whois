@@ -76,7 +76,8 @@ export function AdSlot({
   reservedHeight,
 }: AdSlotProps) {
   const ref = useRef<HTMLModElement>(null);
-  const clientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
+  const clientId =
+    process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID ?? "ca-pub-3928224800312187";
   const enabled = !!clientId && !!slotId;
 
   useEffect(() => {
