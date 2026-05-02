@@ -113,21 +113,21 @@ export default async function DomainPage({
             reservedHeight={250}
             className="sticky top-24"
           />
-          <div className="mt-6 rounded-lg border border-[var(--color-border)] p-4 bg-[var(--color-surface)]/40">
-            <h3 className="text-sm uppercase tracking-wide text-[var(--color-muted)]">
+          <div className="mt-6 rounded-lg border border-border p-4 bg-surface/40">
+            <h3 className="text-sm uppercase tracking-wide text-muted">
               Quick facts
             </h3>
             <dl className="mt-3 text-sm space-y-2">
               <div className="flex justify-between gap-4">
-                <dt className="text-[var(--color-muted)]">Source</dt>
+                <dt className="text-muted">Source</dt>
                 <dd className="font-mono">{snapshot.info.source}</dd>
               </div>
               <div className="flex justify-between gap-4">
-                <dt className="text-[var(--color-muted)]">Tier</dt>
+                <dt className="text-muted">Tier</dt>
                 <dd className="font-mono uppercase">{snapshot.health.tier}</dd>
               </div>
               <div className="flex justify-between gap-4">
-                <dt className="text-[var(--color-muted)]">Fetched</dt>
+                <dt className="text-muted">Fetched</dt>
                 <dd className="font-mono text-xs">
                   {new Date(snapshot.fetchedAt).toUTCString().replace(/^\w+, /, "")}
                 </dd>

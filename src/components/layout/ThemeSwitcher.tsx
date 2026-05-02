@@ -17,7 +17,7 @@ export function ThemeSwitcher() {
       type="button"
       aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="size-9 inline-flex items-center justify-center rounded-md border border-[var(--color-border)] hover:bg-[var(--color-surface)] transition-colors"
+      className="size-9 inline-flex items-center justify-center rounded-md border border-border hover:bg-surface transition-colors"
     >
       {!mounted ? (
         <span className="size-4" />

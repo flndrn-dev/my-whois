@@ -67,13 +67,13 @@ export function HealthScoreRing({ health }: { health: HealthScore }) {
                 {health.score}
               </text>
             </svg>
-            <p className="text-xs text-[var(--color-muted)] mt-1 uppercase tracking-wide">
+            <p className="text-xs text-muted mt-1 uppercase tracking-wide">
               Health score
             </p>
           </div>
         </TooltipTrigger>
         <TooltipContent className="!max-w-sm p-0">
-          <ul className="divide-y divide-[var(--color-border)]">
+          <ul className="divide-y divide-border">
             {health.breakdown.map((b) => (
               <li
                 key={b.label}
@@ -81,7 +81,7 @@ export function HealthScoreRing({ health }: { health: HealthScore }) {
               >
                 <div>
                   <p className="text-sm font-medium">{b.label}</p>
-                  <p className="text-xs text-[var(--color-muted)]">
+                  <p className="text-xs text-muted">
                     {b.detail}
                   </p>
                 </div>

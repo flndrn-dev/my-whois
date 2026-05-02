@@ -11,8 +11,8 @@ function Band({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 py-5 border-b border-[var(--color-border)]">
-      <div className="flex items-center gap-2 sm:w-44 shrink-0 text-[var(--color-muted)]">
+    <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 py-5 border-b border-border">
+      <div className="flex items-center gap-2 sm:w-44 shrink-0 text-muted">
         <span className="size-5 shrink-0">{icon}</span>
         <span className="uppercase text-xs tracking-wide font-medium">
           {label}
@@ -46,7 +46,7 @@ export function RegistrarBand({ info }: { info: DomainSnapshot["info"] }) {
           {info.status.map((s) => (
             <span
               key={s}
-              className="text-xs px-2 py-0.5 rounded border border-[var(--color-border)] text-[var(--color-muted)] font-mono"
+              className="text-xs px-2 py-0.5 rounded border border-border text-muted font-mono"
             >
               {s}
             </span>
@@ -61,29 +61,29 @@ export function DatesBand({ info }: { info: DomainSnapshot["info"] }) {
   const expiryDays = daysFromNow(info.expirationDate);
   const expiryColor =
     expiryDays === null
-      ? "text-[var(--color-muted)]"
+      ? "text-muted"
       : expiryDays < 0
-        ? "text-[var(--color-danger)]"
+        ? "text-danger"
         : expiryDays < 30
-          ? "text-[var(--color-warning)]"
-          : "text-[var(--color-success)]";
+          ? "text-warning"
+          : "text-success";
   return (
     <Band icon={<Calendar />} label="Dates">
       <dl className="grid sm:grid-cols-3 gap-3 sm:gap-6 text-sm">
         <div>
-          <dt className="text-xs text-[var(--color-muted)] uppercase tracking-wide">
+          <dt className="text-xs text-muted uppercase tracking-wide">
             Created
           </dt>
           <dd className="font-mono">{fmtDate(info.registrationDate)}</dd>
         </div>
         <div>
-          <dt className="text-xs text-[var(--color-muted)] uppercase tracking-wide">
+          <dt className="text-xs text-muted uppercase tracking-wide">
             Updated
           </dt>
           <dd className="font-mono">{fmtDate(info.lastChangedDate)}</dd>
         </div>
         <div>
-          <dt className="text-xs text-[var(--color-muted)] uppercase tracking-wide">
+          <dt className="text-xs text-muted uppercase tracking-wide">
             Expires
           </dt>
           <dd className="font-mono">
@@ -106,7 +106,7 @@ export function NameserversBand({ info }: { info: DomainSnapshot["info"] }) {
   return (
     <Band icon={<Server />} label="Nameservers">
       {info.nameservers.length === 0 ? (
-        <span className="text-[var(--color-muted)]">(none reported)</span>
+        <span className="text-muted">(none reported)</span>
       ) : (
         <ul className="font-mono text-sm space-y-0.5">
           {info.nameservers.map((ns) => (
@@ -114,12 +114,12 @@ export function NameserversBand({ info }: { info: DomainSnapshot["info"] }) {
           ))}
         </ul>
       )}
-      <p className="text-xs text-[var(--color-muted)] mt-2">
+      <p className="text-xs text-muted mt-2">
         DNSSEC:{" "}
         {info.dnssecEnabled ? (
-          <span className="text-[var(--color-success)]">enabled</span>
+          <span className="text-success">enabled</span>
         ) : (
-          <span className="text-[var(--color-warning)]">not enabled</span>
+          <span className="text-warning">not enabled</span>
         )}
       </p>
     </Band>
@@ -129,8 +129,8 @@ export function NameserversBand({ info }: { info: DomainSnapshot["info"] }) {
 export function SslInfoBand({ ssl }: { ssl: DomainSnapshot["ssl"] }) {
   if (!ssl) {
     return (
-      <Band icon={<ShieldX className="text-[var(--color-danger)]" />} label="SSL">
-        <span className="text-[var(--color-muted)]">
+      <Band icon={<ShieldX className="text-danger" />} label="SSL">
+        <span className="text-muted">
           No SSL certificate detected.
         </span>
       </Band>
@@ -142,38 +142,38 @@ export function SslInfoBand({ ssl }: { ssl: DomainSnapshot["ssl"] }) {
       ? ShieldX
       : ShieldAlert;
   const color = ssl.valid
-    ? "text-[var(--color-success)]"
-    : "text-[var(--color-danger)]";
+    ? "text-success"
+    : "text-danger";
   return (
     <Band icon={<Icon className={color} />} label="SSL certificate">
       <dl className="grid sm:grid-cols-2 gap-3 sm:gap-6 text-sm">
         <div>
-          <dt className="text-xs text-[var(--color-muted)] uppercase tracking-wide">
+          <dt className="text-xs text-muted uppercase tracking-wide">
             Issuer
           </dt>
           <dd className="font-mono">{ssl.issuer ?? "(unknown)"}</dd>
         </div>
         <div>
-          <dt className="text-xs text-[var(--color-muted)] uppercase tracking-wide">
+          <dt className="text-xs text-muted uppercase tracking-wide">
             Valid until
           </dt>
           <dd className="font-mono">
             {fmtDate(ssl.validTo)}
             {ssl.daysRemaining !== null ? (
-              <span className="block text-xs mt-0.5 text-[var(--color-muted)]">
+              <span className="block text-xs mt-0.5 text-muted">
                 {ssl.daysRemaining} days remaining
               </span>
             ) : null}
           </dd>
         </div>
         <div>
-          <dt className="text-xs text-[var(--color-muted)] uppercase tracking-wide">
+          <dt className="text-xs text-muted uppercase tracking-wide">
             Subject
           </dt>
           <dd className="font-mono break-all">{ssl.subject ?? "—"}</dd>
         </div>
         <div>
-          <dt className="text-xs text-[var(--color-muted)] uppercase tracking-wide">
+          <dt className="text-xs text-muted uppercase tracking-wide">
             Protocol
           </dt>
           <dd className="font-mono">{ssl.protocol ?? "—"}</dd>
@@ -187,7 +187,7 @@ export function TechStackBand({ tech }: { tech: DomainSnapshot["tech"] }) {
   if (tech.length === 0) {
     return (
       <Band icon={<Globe />} label="Tech stack">
-        <span className="text-[var(--color-muted)]">
+        <span className="text-muted">
           No vendors detected from public signals.
         </span>
       </Band>
@@ -199,9 +199,9 @@ export function TechStackBand({ tech }: { tech: DomainSnapshot["tech"] }) {
         {tech.map((chip) => (
           <span
             key={`${chip.category}-${chip.vendor}`}
-            className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1 text-xs"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 text-xs"
           >
-            <span className="text-[var(--color-muted)] uppercase tracking-wide text-[10px]">
+            <span className="text-muted uppercase tracking-wide text-[10px]">
               {chip.category}
             </span>
             <span className="font-medium">{chip.vendor}</span>

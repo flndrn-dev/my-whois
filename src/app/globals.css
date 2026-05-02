@@ -90,6 +90,16 @@
   .font-mono {
     font-family: var(--font-mono);
   }
+
+  /* Tailwind v4 preflight sets all buttons to cursor: default — restore the */
+  /* expected pointer for interactive elements project-wide.                  */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  a[href],
+  summary,
+  label[for] {
+    cursor: pointer;
+  }
 }
 
 @layer components {

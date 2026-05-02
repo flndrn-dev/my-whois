@@ -9,13 +9,13 @@ export function ComparisonShowcase() {
     Boolean,
   ) as [string, string][];
   return (
-    <section className="py-12 border-t border-[var(--color-border)]">
+    <section className="py-12 border-t border-border">
       <div className="flex items-end justify-between gap-6 flex-wrap">
         <div>
           <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">
             More ways to explore
           </h2>
-          <p className="mt-2 text-[var(--color-muted)]">
+          <p className="mt-2 text-muted">
             Compare any two domains at once, or jump into a curated head-to-head.
           </p>
         </div>
@@ -23,7 +23,7 @@ export function ComparisonShowcase() {
 
       <div className="mt-8 grid lg:grid-cols-3 gap-10">
         <div>
-          <h3 className="text-sm uppercase tracking-wide text-[var(--color-muted)]">
+          <h3 className="text-sm uppercase tracking-wide text-muted">
             Domain comparisons
           </h3>
           <ul className="mt-3 space-y-2">
@@ -31,9 +31,9 @@ export function ComparisonShowcase() {
               <li key={`${a}-${b}`}>
                 <Link
                   href={`/compare/${pairSlug(a, b)}`}
-                  className="font-mono text-sm hover:text-[var(--color-accent)] inline-flex items-center gap-2"
+                  className="font-mono text-sm hover:text-accent inline-flex items-center gap-2"
                 >
-                  {a} <span className="text-[var(--color-muted)]">vs</span> {b}
+                  {a} <span className="text-muted">vs</span> {b}
                   <ArrowRight className="size-3" />
                 </Link>
               </li>
@@ -41,30 +41,30 @@ export function ComparisonShowcase() {
           </ul>
         </div>
         <div>
-          <h3 className="text-sm uppercase tracking-wide text-[var(--color-muted)]">
+          <h3 className="text-sm uppercase tracking-wide text-muted">
             Top TLDs
           </h3>
-          <ul className="mt-3 space-y-2 text-[var(--color-muted)] text-sm">
+          <ul className="mt-3 space-y-2 text-muted text-sm">
             <li>.com — the legacy default</li>
             <li>.io — startups and devtools</li>
             <li>.ai — anything with a model attached</li>
             <li>.sh — shell-flavoured side-projects</li>
             <li>.dev — Google&rsquo;s HTTPS-only namespace</li>
           </ul>
-          <p className="mt-3 text-xs text-[var(--color-muted)]">
+          <p className="mt-3 text-xs text-muted">
             Per-TLD pages with stats and renewal economics ship in Phase 2.
           </p>
         </div>
         <div>
-          <h3 className="text-sm uppercase tracking-wide text-[var(--color-muted)]">
+          <h3 className="text-sm uppercase tracking-wide text-muted">
             Reading
           </h3>
-          <ul className="mt-3 space-y-2 text-[var(--color-muted)] text-sm">
+          <ul className="mt-3 space-y-2 text-muted text-sm">
             <li>What goes into a healthy DNS setup</li>
             <li>Reading an RDAP response, line by line</li>
             <li>Why GDPR redacts most EU registrant data</li>
           </ul>
-          <p className="mt-3 text-xs text-[var(--color-muted)]">
+          <p className="mt-3 text-xs text-muted">
             Long-form posts arrive once the indexer has settled in.
           </p>
         </div>

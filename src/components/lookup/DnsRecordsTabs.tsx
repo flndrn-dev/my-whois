@@ -10,7 +10,7 @@ import type { DnsRecords } from "@/lib/types";
 
 function RecordList({ items }: { items: string[] }) {
   if (items.length === 0)
-    return <p className="text-[var(--color-muted)] text-sm">No records.</p>;
+    return <p className="text-muted text-sm">No records.</p>;
   return (
     <ul className="font-mono text-sm space-y-0.5 break-all">
       {items.map((line, i) => (
@@ -31,8 +31,8 @@ export function DnsRecordsTabs({ dns }: { dns: DnsRecords }) {
     { key: "cname", label: "CNAME", items: dns.cname },
   ];
   return (
-    <div className="border border-[var(--color-border)] rounded-lg p-4 bg-[var(--color-surface)]/40">
-      <h3 className="text-sm uppercase tracking-wide text-[var(--color-muted)] mb-3">
+    <div className="border border-border rounded-lg p-4 bg-surface/40">
+      <h3 className="text-sm uppercase tracking-wide text-muted mb-3">
         DNS records
       </h3>
       <Tabs defaultValue="a">
@@ -40,7 +40,7 @@ export function DnsRecordsTabs({ dns }: { dns: DnsRecords }) {
           {tabs.map((t) => (
             <TabsTrigger key={t.key} value={t.key}>
               {t.label}
-              <span className="ml-1.5 text-[var(--color-muted)] text-xs">
+              <span className="ml-1.5 text-muted text-xs">
                 {t.items.length}
               </span>
             </TabsTrigger>

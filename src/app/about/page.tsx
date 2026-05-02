@@ -12,7 +12,7 @@ export default function AboutPage() {
       <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">
         About my whois
       </h1>
-      <div className="mt-6 space-y-5 text-[var(--color-muted)] leading-relaxed">
+      <div className="mt-6 space-y-5 text-muted leading-relaxed">
         <p>
           my whois is a free domain inspector built and run by flndrn. It
           turns flat WHOIS data into something you can read at a glance: a

@@ -29,8 +29,8 @@ function Cell({
     <td
       className={`px-4 py-3 text-sm font-mono ${
         win
-          ? "text-[var(--color-success)] font-medium"
-          : "text-[var(--color-foreground)]"
+          ? "text-success font-medium"
+          : "text-foreground"
       }`}
     >
       {value}
@@ -46,10 +46,10 @@ function Row({
   cells: { value: React.ReactNode; win?: boolean }[];
 }) {
   return (
-    <tr className="border-b border-[var(--color-border)] last:border-b-0">
+    <tr className="border-b border-border last:border-b-0">
       <th
         scope="row"
-        className="px-4 py-3 text-left text-xs uppercase tracking-wide text-[var(--color-muted)] font-medium align-top w-44"
+        className="px-4 py-3 text-left text-xs uppercase tracking-wide text-muted font-medium align-top w-44"
       >
         {label}
       </th>
@@ -61,12 +61,12 @@ function Row({
 }
 
 function sslIcon(ssl: DomainSnapshot["ssl"]) {
-  if (!ssl) return <ShieldX className="size-4 text-[var(--color-danger)]" />;
+  if (!ssl) return <ShieldX className="size-4 text-danger" />;
   if (ssl.valid && (ssl.daysRemaining ?? 0) >= 30)
-    return <ShieldCheck className="size-4 text-[var(--color-success)]" />;
+    return <ShieldCheck className="size-4 text-success" />;
   if (ssl.valid)
-    return <ShieldAlert className="size-4 text-[var(--color-warning)]" />;
-  return <ShieldX className="size-4 text-[var(--color-danger)]" />;
+    return <ShieldAlert className="size-4 text-warning" />;
+  return <ShieldX className="size-4 text-danger" />;
 }
 
 export function ComparisonView({
@@ -85,8 +85,8 @@ export function ComparisonView({
   const bHealthier = b.health.score > a.health.score;
 
   return (
-    <div className="overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]/40">
-      <div className="grid grid-cols-2 border-b border-[var(--color-border)]">
+    <div className="overflow-hidden rounded-xl border border-border bg-surface/40">
+      <div className="grid grid-cols-2 border-b border-border">
         <div className="px-4 py-5 text-center">
           <Link
             href={`/${a.domain}`}
@@ -95,7 +95,7 @@ export function ComparisonView({
             {a.domain}
           </Link>
         </div>
-        <div className="px-4 py-5 text-center border-l border-[var(--color-border)]">
+        <div className="px-4 py-5 text-center border-l border-border">
           <Link
             href={`/${b.domain}`}
             className="text-xl sm:text-2xl font-display font-bold hover:underline break-all"
@@ -190,7 +190,7 @@ export function ComparisonView({
           />
         </tbody>
       </table>
-      <div className="px-4 py-3 text-xs text-[var(--color-muted)] flex items-center justify-center gap-2 border-t border-[var(--color-border)]">
+      <div className="px-4 py-3 text-xs text-muted flex items-center justify-center gap-2 border-t border-border">
         <ArrowLeftRight className="size-3.5" />
         Wins shown in green where directly comparable
       </div>

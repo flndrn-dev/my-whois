@@ -1,12 +1,12 @@
 export function AboutSection() {
   return (
-    <section className="py-12 border-t border-[var(--color-border)]">
+    <section className="py-12 border-t border-border">
       <div className="grid lg:grid-cols-12 gap-10">
         <div className="lg:col-span-4">
           <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">
             More than a plain WHOIS
           </h2>
-          <p className="mt-3 text-[var(--color-muted)]">
+          <p className="mt-3 text-muted">
             One look-up, four signals: live age, health score, side-by-side
             comparison, tech-stack detection.
           </p>
@@ -16,7 +16,7 @@ export function AboutSection() {
             <h3 className="font-display text-lg font-semibold">
               About this domain inspector
             </h3>
-            <p className="mt-2 text-[var(--color-muted)] leading-relaxed">
+            <p className="mt-2 text-muted leading-relaxed">
               my whois turns a flat WHOIS dump into something you can read in
               ten seconds. Look up any domain — gTLDs like <code>.com</code>{" "}
               and <code>.dev</code>, ccTLDs like <code>.io</code>,{" "}
@@ -26,7 +26,7 @@ export function AboutSection() {
               relies on, all on one page. The lookup is unlimited and free,
               and we never log your queries against an IP address.
             </p>
-            <p className="mt-3 text-[var(--color-muted)] leading-relaxed">
+            <p className="mt-3 text-muted leading-relaxed">
               Where most WHOIS tools stop at static text, my whois adds a live
               age counter, a transparent health score, and pre-built domain
               comparisons so you can drop in two names and see who&rsquo;s
@@ -37,7 +37,7 @@ export function AboutSection() {
             <h3 className="font-display text-lg font-semibold">
               How the Domain Health Score works
             </h3>
-            <p className="mt-2 text-[var(--color-muted)] leading-relaxed">
+            <p className="mt-2 text-muted leading-relaxed">
               The score is a single 0–100 number based on six public signals:
               SSL validity and runway (25 points), DNSSEC delegation (15),
               SPF record (10), DMARC policy (10), nameserver redundancy (15),
@@ -50,7 +50,7 @@ export function AboutSection() {
             <h3 className="font-display text-lg font-semibold">
               What you can do
             </h3>
-            <ul className="mt-2 space-y-1 text-[var(--color-muted)] leading-relaxed list-disc pl-5">
+            <ul className="mt-2 space-y-1 text-muted leading-relaxed list-disc pl-5">
               <li>Watch a domain&rsquo;s age tick up live, second by second.</li>
               <li>See its health score and the six checks behind it.</li>
               <li>Compare any two domains side-by-side at <code>/compare/a-vs-b</code>.</li>
@@ -62,7 +62,7 @@ export function AboutSection() {
             <h3 className="font-display text-lg font-semibold">
               Why this matters
             </h3>
-            <p className="mt-2 text-[var(--color-muted)] leading-relaxed">
+            <p className="mt-2 text-muted leading-relaxed">
               For owners auditing their own setup. For investors checking a
               brand&rsquo;s domain hygiene. For developers debugging DNS or
               picking a registrar. For anyone curious how old a domain

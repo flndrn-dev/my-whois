@@ -67,12 +67,12 @@ export default async function ComparePage({
   return (
     <div className="container-content py-8 sm:py-10">
       <div className="mb-8">
-        <p className="text-xs uppercase tracking-[0.2em] text-[var(--color-muted)]">
+        <p className="text-xs uppercase tracking-[0.2em] text-muted">
           domain comparison
         </p>
         <h1 className="mt-2 font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
           {aDomain}{" "}
-          <span className="text-[var(--color-muted)] font-normal">vs</span>{" "}
+          <span className="text-muted font-normal">vs</span>{" "}
           {bDomain}
         </h1>
       </div>
@@ -87,7 +87,7 @@ export default async function ComparePage({
       {a && b ? (
         <ComparisonView a={a} b={b} />
       ) : (
-        <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)]/40 p-6 text-sm text-[var(--color-muted)]">
+        <div className="rounded-lg border border-border bg-surface/40 p-6 text-sm text-muted">
           We could only resolve one side of this comparison
           {!a ? ` (${aDomain} did not return a record)` : ` (${bDomain} did not return a record)`}
           . Try the individual lookups below.
@@ -99,7 +99,7 @@ export default async function ComparePage({
           Compare another pair
         </h2>
         <DomainInput size="default" />
-        <p className="text-xs text-[var(--color-muted)] mt-2">
+        <p className="text-xs text-muted mt-2">
           Look up either domain individually for the full record, DNS, SSL,
           and tech stack.
         </p>

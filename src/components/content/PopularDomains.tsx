@@ -3,11 +3,11 @@ import { POPULAR_DOMAINS } from "@/lib/data/popular-domains";
 
 export function PopularDomains() {
   return (
-    <section className="py-12 border-t border-[var(--color-border)]">
+    <section className="py-12 border-t border-border">
       <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">
         Popular searches
       </h2>
-      <p className="mt-2 text-[var(--color-muted)]">
+      <p className="mt-2 text-muted">
         Browse fully-rendered lookups for some of the internet&rsquo;s most
         recognisable domains.
       </p>
@@ -16,7 +16,7 @@ export function PopularDomains() {
           <li key={d}>
             <Link
               href={`/${d}`}
-              className="block rounded-md border border-[var(--color-border)] px-3 py-2 font-mono text-sm hover:bg-[var(--color-surface)] transition-colors"
+              className="block rounded-md border border-border px-3 py-2 font-mono text-sm hover:bg-surface transition-colors"
             >
               {d}
             </Link>

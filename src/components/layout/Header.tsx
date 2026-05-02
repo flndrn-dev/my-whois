@@ -4,7 +4,7 @@ import { ThemeSwitcher } from "./ThemeSwitcher";
 
 export function Header() {
   return (
-    <header className="border-b border-[var(--color-border)] bg-[var(--color-background)]/80 backdrop-blur-md sticky top-0 z-40">
+    <header className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-40">
       <div className="container-content h-16 flex items-center justify-between">
         <Link
           href="/"
@@ -48,10 +48,10 @@ export function Header() {
             />
           </span>
         </Link>
-        <nav className="flex items-center gap-4 text-sm text-[var(--color-muted)]">
+        <nav className="flex items-center gap-4 text-sm text-muted">
           <Link
             href="/about"
-            className="hover:text-[var(--color-foreground)] transition-colors hidden sm:inline"
+            className="hover:text-foreground transition-colors hidden sm:inline"
           >
             About
           </Link>

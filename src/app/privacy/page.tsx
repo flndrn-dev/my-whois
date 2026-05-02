@@ -11,11 +11,11 @@ export default function PrivacyPage() {
       <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">
         Privacy Policy
       </h1>
-      <p className="mt-2 text-sm text-[var(--color-muted)]">
+      <p className="mt-2 text-sm text-muted">
         Last updated: {new Date().toUTCString().replace(/^\w+, /, "")}
       </p>
-      <div className="mt-6 space-y-5 text-[var(--color-muted)] leading-relaxed">
-        <h2 className="font-display text-xl font-semibold text-[var(--color-foreground)]">
+      <div className="mt-6 space-y-5 text-muted leading-relaxed">
+        <h2 className="font-display text-xl font-semibold text-foreground">
           What we collect
         </h2>
         <p>
@@ -25,7 +25,7 @@ export default function PrivacyPage() {
           views and events (lookup, compare, share) — never anything that
           identifies you personally.
         </p>
-        <h2 className="font-display text-xl font-semibold text-[var(--color-foreground)]">
+        <h2 className="font-display text-xl font-semibold text-foreground">
           Lookup queries
         </h2>
         <p>
@@ -35,7 +35,7 @@ export default function PrivacyPage() {
           addresses are redacted from registry responses before they reach
           your browser.
         </p>
-        <h2 className="font-display text-xl font-semibold text-[var(--color-foreground)]">
+        <h2 className="font-display text-xl font-semibold text-foreground">
           Advertising
         </h2>
         <p>
@@ -46,7 +46,7 @@ export default function PrivacyPage() {
           explicit consent. You can opt out of personalised advertising via{" "}
           <a
             href="https://adssettings.google.com"
-            className="underline hover:text-[var(--color-foreground)]"
+            className="underline hover:text-foreground"
             rel="noopener noreferrer"
             target="_blank"
           >
@@ -54,7 +54,7 @@ export default function PrivacyPage() {
           </a>
           .
         </p>
-        <h2 className="font-display text-xl font-semibold text-[var(--color-foreground)]">
+        <h2 className="font-display text-xl font-semibold text-foreground">
           Data we do not store
         </h2>
         <p>
@@ -62,7 +62,7 @@ export default function PrivacyPage() {
           email addresses. Lookup history is held only in volatile memory
           and expires within an hour.
         </p>
-        <h2 className="font-display text-xl font-semibold text-[var(--color-foreground)]">
+        <h2 className="font-display text-xl font-semibold text-foreground">
           Your rights (GDPR / UK GDPR)
         </h2>
         <p>
@@ -70,7 +70,7 @@ export default function PrivacyPage() {
           access, correct, or erase on request. If a regulator wishes to
           confirm this, the codebase is open to inspection.
         </p>
-        <h2 className="font-display text-xl font-semibold text-[var(--color-foreground)]">
+        <h2 className="font-display text-xl font-semibold text-foreground">
           Changes
         </h2>
         <p>

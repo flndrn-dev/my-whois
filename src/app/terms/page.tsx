@@ -11,11 +11,11 @@ export default function TermsPage() {
       <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">
         Terms of Service
       </h1>
-      <p className="mt-2 text-sm text-[var(--color-muted)]">
+      <p className="mt-2 text-sm text-muted">
         Last updated: {new Date().toUTCString().replace(/^\w+, /, "")}
       </p>
-      <div className="mt-6 space-y-5 text-[var(--color-muted)] leading-relaxed">
-        <h2 className="font-display text-xl font-semibold text-[var(--color-foreground)]">
+      <div className="mt-6 space-y-5 text-muted leading-relaxed">
+        <h2 className="font-display text-xl font-semibold text-foreground">
           Use of the service
         </h2>
         <p>
@@ -25,7 +25,7 @@ export default function TermsPage() {
           protections. Excessive automated traffic may be throttled or
           blocked at the edge.
         </p>
-        <h2 className="font-display text-xl font-semibold text-[var(--color-foreground)]">
+        <h2 className="font-display text-xl font-semibold text-foreground">
           Data sources and accuracy
         </h2>
         <p>
@@ -36,7 +36,7 @@ export default function TermsPage() {
           this tool. We make no warranty as to the completeness or
           freshness of any specific field.
         </p>
-        <h2 className="font-display text-xl font-semibold text-[var(--color-foreground)]">
+        <h2 className="font-display text-xl font-semibold text-foreground">
           No professional advice
         </h2>
         <p>
@@ -44,7 +44,7 @@ export default function TermsPage() {
           signals, not a professional security audit. Do not rely on it
           alone for compliance, legal, or commercial decisions.
         </p>
-        <h2 className="font-display text-xl font-semibold text-[var(--color-foreground)]">
+        <h2 className="font-display text-xl font-semibold text-foreground">
           Trademarks
         </h2>
         <p>
@@ -52,7 +52,7 @@ export default function TermsPage() {
           their respective owners. Display here implies no endorsement or
           affiliation.
         </p>
-        <h2 className="font-display text-xl font-semibold text-[var(--color-foreground)]">
+        <h2 className="font-display text-xl font-semibold text-foreground">
           Liability
         </h2>
         <p>
@@ -61,7 +61,7 @@ export default function TermsPage() {
           shall not be liable for any indirect, incidental, or consequential
           damages arising from your use of the service.
         </p>
-        <h2 className="font-display text-xl font-semibold text-[var(--color-foreground)]">
+        <h2 className="font-display text-xl font-semibold text-foreground">
           Jurisdiction
         </h2>
         <p>
@@ -69,7 +69,7 @@ export default function TermsPage() {
           Disputes shall be resolved in the courts of the operator&rsquo;s
           country of residence.
         </p>
-        <h2 className="font-display text-xl font-semibold text-[var(--color-foreground)]">
+        <h2 className="font-display text-xl font-semibold text-foreground">
           Changes
         </h2>
         <p>

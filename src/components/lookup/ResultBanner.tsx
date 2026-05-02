@@ -6,10 +6,10 @@ import { ShareScoreButton } from "./ShareScoreButton";
 export function ResultBanner({ snapshot }: { snapshot: DomainSnapshot }) {
   const { domain, info, health } = snapshot;
   return (
-    <section className="border-b border-[var(--color-border)] py-8 sm:py-10">
+    <section className="border-b border-border py-8 sm:py-10">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
         <div className="flex-1 min-w-0">
-          <p className="text-xs uppercase tracking-wider text-[var(--color-muted)]">
+          <p className="text-xs uppercase tracking-wider text-muted">
             Domain
           </p>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold tracking-tight mt-1 break-all">
@@ -19,7 +19,7 @@ export function ResultBanner({ snapshot }: { snapshot: DomainSnapshot }) {
             {info.registrationDate ? (
               <LiveAgeCounter registrationISO={info.registrationDate} />
             ) : (
-              <p className="text-sm text-[var(--color-muted)]">
+              <p className="text-sm text-muted">
                 Registration date is not published for this domain.
               </p>
             )}

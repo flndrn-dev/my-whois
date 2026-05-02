@@ -35,7 +35,7 @@ export function DomainInput({ defaultValue = "", size = "lg", autoFocus }: Props
     <form onSubmit={submit} className="w-full max-w-2xl">
       <div className="flex flex-col sm:flex-row gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-[var(--color-muted)]" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-muted" />
           <Input
             value={value}
             onChange={(e) => setValue(e.target.value)}
@@ -59,7 +59,7 @@ export function DomainInput({ defaultValue = "", size = "lg", autoFocus }: Props
         </Button>
       </div>
       {error ? (
-        <p className="mt-2 text-sm text-[var(--color-danger)]">{error}</p>
+        <p className="mt-2 text-sm text-danger">{error}</p>
       ) : null}
     </form>
   );
