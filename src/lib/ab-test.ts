@@ -73,8 +73,12 @@ export function shouldRenderInThisSession(): SessionRenderDecision | null {
     const stored = window.sessionStorage.getItem(SESSION_RENDER_KEY);
     if (stored === "show" || stored === "hide") return stored;
 
+    // 80% probability of "show" within Cohort B, so the cross-promo link
+    // appears in roughly 40% of total pageviews (50% B × 80% show).
+    // Lower than 100% so even Cohort B visitors see the band varying
+    // between sessions and don't perceive it as a fixed CTA.
     const decision: SessionRenderDecision =
-      Math.random() < 0.5 ? "show" : "hide";
+      Math.random() < 0.8 ? "show" : "hide";
     window.sessionStorage.setItem(SESSION_RENDER_KEY, decision);
     return decision;
   } catch {
