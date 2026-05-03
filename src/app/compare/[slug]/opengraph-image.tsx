@@ -1,7 +1,8 @@
 import { ImageResponse } from "next/og";
 import { parsePairSlug } from "@/lib/data/comparison-pairs";
 
-export const runtime = "edge";
+// nodejs runtime — Dokploy's Node container doesn't run Vercel edge.
+export const runtime = "nodejs";
 export const alt = "Domain comparison on my whois";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -30,7 +31,7 @@ export default async function CompareOGImage({
         }}
       >
         <div style={{ display: "flex", alignItems: "center", fontSize: 28 }}>
-          <span style={{ color: "#f5c842", marginRight: 12 }}>◆</span>
+          <span style={{ display: "flex", width: 28, height: 28, background: "#f5c842", borderRadius: 5, marginRight: 12 }} />
           <span style={{ fontWeight: 700 }}>my whois</span>
           <span style={{ marginLeft: 24, fontSize: 22, color: "#b7b7b7", textTransform: "uppercase", letterSpacing: "0.18em" }}>
             domain comparison

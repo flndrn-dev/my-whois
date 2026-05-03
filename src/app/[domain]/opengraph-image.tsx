@@ -78,9 +78,7 @@ export default async function DomainOGImage({
             fontSize: 28,
           }}
         >
-          <span style={{ color: "#f5c842", marginRight: 12, fontSize: 36 }}>
-            ◆
-          </span>
+          <span style={{ display: "flex", width: 28, height: 28, background: "#f5c842", borderRadius: 5, marginRight: 12 }} />
           <span style={{ fontWeight: 700 }}>my whois</span>
         </div>
 
