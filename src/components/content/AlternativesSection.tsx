@@ -102,31 +102,6 @@ export async function AlternativesSection({ domain }: Props) {
           );
         })}
       </ul>
-
-      <details className="mt-5 text-xs text-muted">
-        <summary className="cursor-pointer hover:text-foreground transition-colors">
-          About these registrars
-        </summary>
-        <ul className="mt-2 space-y-1 pl-4 list-disc">
-          {REGISTRARS.map((r) => (
-            <li key={r.id}>
-              <span className="font-medium text-foreground">{r.name}</span> —{" "}
-              {r.blurb}
-              {r.hasAffiliate ? (
-                <span className="ml-2 text-[10px] uppercase tracking-wide opacity-60">
-                  affiliate
-                </span>
-              ) : null}
-            </li>
-          ))}
-        </ul>
-        <p className="mt-2">
-          Affiliate links earn this site a small commission on completed sign-ups
-          at no extra cost to you. Cloudflare Registrar has no affiliate
-          program; we list it because it&rsquo;s the cheapest option in the
-          long run.
-        </p>
-      </details>
     </section>
   );
 }
