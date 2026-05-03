@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Activity, ExternalLink } from "@/components/ui/icons";
 import {
   getMonitoringBandCohort,
@@ -25,17 +26,23 @@ type Props = {
 //   2. Current session got a "show" coin flip (sessionStorage decision)
 //   3. NEXT_PUBLIC_WEBDOWN_LIVE === "true" (kill-switch)
 //
-// SSR-safe — returns null until the client useEffect resolves cohort and
-// session state. The reserved-height behaviour is implicit in the band
-// styling (no card, no shadow), so a "now you see it / now you don't"
-// hydration is acceptable here.
+// PREVIEW MODE: append `?preview=monitoring` to any /[domain] URL to
+// force-render the band (bypasses cohort, session, and kill-switch).
+// Useful for previewing the design and testing the click-through flow
+// without waiting on the random selection. Preview mode does NOT fire
+// any Umami events so it doesn't pollute A/B-test data.
 
 export function MonitoringBand({ domain }: Props) {
+  const params = useSearchParams();
+  const previewMode = params.get("preview") === "monitoring";
+
   const [cohort, setCohort] = useState<Cohort | null>(null);
   const [sessionDecision, setSessionDecision] =
     useState<SessionRenderDecision | null>(null);
 
   useEffect(() => {
+    if (previewMode) return; // No tracking in preview mode
+
     const c = getMonitoringBandCohort();
     setCohort(c);
 
@@ -60,19 +67,24 @@ export function MonitoringBand({ domain }: Props) {
         }
       }
     }
-  }, [domain]);
+  }, [domain, previewMode]);
 
-  // SSR & hydration guard
-  if (cohort === null) return null;
-  // Cohort A: never render
-  if (cohort === "A") return null;
-  // Kill-switch off: never render
-  if (process.env.NEXT_PUBLIC_WEBDOWN_LIVE !== "true") return null;
-  // Cohort B but session decided "hide": don't render this session
-  if (sessionDecision !== "show") return null;
+  // Preview mode bypasses every gate.
+  if (!previewMode) {
+    // SSR & hydration guard
+    if (cohort === null) return null;
+    // Cohort A: never render
+    if (cohort === "A") return null;
+    // Kill-switch off: never render
+    if (process.env.NEXT_PUBLIC_WEBDOWN_LIVE !== "true") return null;
+    // Cohort B but session decided "hide": don't render this session
+    if (sessionDecision !== "show") return null;
+  }
 
   const handleClick = () => {
-    trackEvent("monitoring_band_clicked", { domain });
+    if (!previewMode) {
+      trackEvent("monitoring_band_clicked", { domain });
+    }
   };
 
   return (
@@ -102,6 +114,11 @@ export function MonitoringBand({ domain }: Props) {
             web-down.com
             <ExternalLink className="size-3" />
           </a>
+          {previewMode ? (
+            <span className="text-[10px] uppercase tracking-[0.18em] text-accent border border-accent/40 rounded px-1.5 py-0.5 font-mono">
+              preview
+            </span>
+          ) : null}
         </div>
       </div>
     </div>
