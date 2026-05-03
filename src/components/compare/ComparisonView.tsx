@@ -1,4 +1,4 @@
-import { ArrowLeftRight, ShieldCheck, ShieldAlert, ShieldX } from "lucide-react";
+import { ArrowLeftRight, ShieldCheck, ShieldAlert, ShieldX } from "@/components/ui/icons";
 import Link from "next/link";
 import type { DomainSnapshot } from "@/lib/types";
 

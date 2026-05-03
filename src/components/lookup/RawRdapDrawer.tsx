@@ -1,7 +1,7 @@
 "use client";
 
 import * as Dialog from "@radix-ui/react-dialog";
-import { Code2, X } from "lucide-react";
+import { Code2, X } from "@/components/ui/icons";
 
 export function RawRdapDrawer({ raw }: { raw: unknown }) {
   if (raw == null) return null;

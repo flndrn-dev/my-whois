@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight } from "@/components/ui/icons";
 import { COMPARISON_PAIRS, pairSlug } from "@/lib/data/comparison-pairs";
 import { POPULAR_TLDS_FOR_HOMEPAGE, getTld } from "@/lib/data/tlds";
 import { getAllPosts } from "@/lib/blog";

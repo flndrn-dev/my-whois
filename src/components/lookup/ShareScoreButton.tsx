@@ -1,6 +1,6 @@
 "use client";
 
-import { Share2 } from "lucide-react";
+import { Share2 } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
 import { trackEvent } from "@/lib/umami";
 

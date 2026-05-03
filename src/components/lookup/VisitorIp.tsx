@@ -1,5 +1,5 @@
 import { headers } from "next/headers";
-import { Globe2 } from "lucide-react";
+import { Globe2 } from "@/components/ui/icons";
 
 // Server component: reads the requester's IP from forwarded headers.
 // IP is rendered to the visitor only; it is never logged, persisted, or

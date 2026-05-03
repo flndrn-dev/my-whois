@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Download, AlertCircle, Loader2, Play } from "lucide-react";
+import { Download, AlertCircle, Loader2, Play } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
 
 type Row = {

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { Menu, X } from "@/components/ui/icons";
 
 const NAV_LINKS = [
   { href: "/bulk", label: "Bulk" },

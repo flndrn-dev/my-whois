@@ -1,4 +1,4 @@
-import { ShieldCheck, ShieldAlert, ShieldX, Calendar, Server, Globe, Building2, ExternalLink, Info, Database, Bell } from "lucide-react";
+import { ShieldCheck, ShieldAlert, ShieldX, Calendar, Server, Globe, Building2, ExternalLink, Info, Database, Bell } from "@/components/ui/icons";
 import type { DomainSnapshot } from "@/lib/types";
 
 function Band({

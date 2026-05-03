@@ -1,4 +1,4 @@
-import { Info } from "lucide-react";
+import { Info } from "@/components/ui/icons";
 
 export function RedactionNotice({ notes }: { notes: string[] }) {
   if (notes.length === 0) return null;

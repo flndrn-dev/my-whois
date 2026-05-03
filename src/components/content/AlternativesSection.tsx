@@ -1,4 +1,4 @@
-import { Check, ExternalLink, Plus, X, HelpCircle } from "lucide-react";
+import { Check, ExternalLink, Plus, X, HelpCircle } from "@/components/ui/icons";
 import {
   REGISTRARS,
   suggestSimilarDomains,

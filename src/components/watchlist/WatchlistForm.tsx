@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Bell, CheckCircle2, AlertCircle } from "lucide-react";
+import { Bell, CheckCircle2, AlertCircle } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
 
 type State =
