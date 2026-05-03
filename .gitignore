@@ -42,3 +42,6 @@ yarn-error.log*
 # IDE
 .idea
 .vscode
+
+# Personal working docs — never push to repo
+AFFILIATE_PROGRAMS.md
