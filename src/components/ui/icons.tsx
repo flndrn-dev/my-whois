@@ -61,18 +61,43 @@ type IconProps = React.SVGAttributes<SVGSVGElement> & {
 
 const HOVER_TRANSITION = { type: "spring", stiffness: 380, damping: 18 } as const;
 
+// Tailwind classes that should apply to the inner SVG (sizing). Everything
+// else lands on the wrapper so positioning utilities (absolute, top-,
+// left-, translate-) resolve against the right element.
+const SVG_CLASS_PATTERN = /^(size|w|h|min-w|min-h|max-w|max-h)-/;
+
+function splitIconClasses(className: string | undefined): {
+  wrapper: string;
+  svg: string;
+} {
+  if (!className) return { wrapper: "", svg: "" };
+  const parts = className.split(/\s+/).filter(Boolean);
+  const svg: string[] = [];
+  const wrapper: string[] = [];
+  for (const cls of parts) {
+    // Strip Tailwind-v4 modifier prefix (sm:, hover:, etc.) when checking
+    // — we want size-3 AND sm:size-4 both routed to the SVG.
+    const last = cls.split(":").at(-1) ?? cls;
+    if (SVG_CLASS_PATTERN.test(last)) svg.push(cls);
+    else wrapper.push(cls);
+  }
+  return { wrapper: wrapper.join(" "), svg: svg.join(" ") };
+}
+
 function makeAnimatedIcon(Icon: LucideIcon, displayName: string) {
   function AnimatedIcon({ size, className, static: isStatic, ...rest }: IconProps) {
     if (isStatic) {
       return <Icon size={size} className={className} {...rest} />;
     }
-    // className from the caller (e.g. "size-3 text-muted") goes on the SVG
-    // itself so Tailwind size utilities actually size the icon. The
-    // wrapper stays as a content-sized inline-flex span with no
-    // user-supplied classes — keeps icon + sibling text on one line.
+    // Sizing utilities (size-3, w-4, h-5, etc.) land on the SVG so the
+    // icon is actually that size. Everything else (positioning, colour,
+    // text-, hover-, etc.) lands on the wrapper so utilities like
+    // `absolute top-1/2 -translate-y-1/2` resolve against the wrapper as
+    // the actual DOM element being positioned.
+    const { wrapper, svg } = splitIconClasses(className);
     return (
       <motion.span
-        className="inline-flex shrink-0 align-middle leading-none"
+        className={`inline-flex shrink-0 align-middle leading-none ${wrapper}`}
         whileHover={{ scale: 1.12, rotate: -4 }}
         whileTap={{ scale: 0.94 }}
         transition={HOVER_TRANSITION}
@@ -80,7 +105,7 @@ function makeAnimatedIcon(Icon: LucideIcon, displayName: string) {
       >
         <Icon
           size={size}
-          className={`transition-transform duration-200 ease-out group-hover:scale-110 ${className ?? ""}`}
+          className={`transition-transform duration-200 ease-out group-hover:scale-110 ${svg}`}
           {...rest}
         />
       </motion.span>
