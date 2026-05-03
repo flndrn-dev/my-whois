@@ -13,7 +13,7 @@ type Props = {
 export function ContentBreakAd({ className = "my-12" }: Props) {
   return (
     <AdSlot
-      slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR_TOP ?? ""}
+      slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MID ?? ""}
       format="banner"
       label="Mid-content break"
       reservedHeight={120}

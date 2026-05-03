@@ -20,9 +20,9 @@ export function PageWithSideAds({ children, wide = false }: Props) {
       </main>
 
       <AdSlot
-        slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR_BOTTOM ?? ""}
+        slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER ?? ""}
         format="banner"
-        label="Bottom banner"
+        label="Footer banner"
         reservedHeight={120}
         className="mt-12"
       />
