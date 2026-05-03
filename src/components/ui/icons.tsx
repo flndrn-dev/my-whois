@@ -66,19 +66,23 @@ function makeAnimatedIcon(Icon: LucideIcon, displayName: string) {
     if (isStatic) {
       return <Icon size={size} className={className} {...rest} />;
     }
+    // className from the caller (e.g. "size-3 text-muted") goes on the SVG
+    // itself so Tailwind size utilities actually size the icon. The
+    // wrapper stays as a content-sized inline-flex span with no
+    // user-supplied classes — keeps icon + sibling text on one line.
     return (
       <motion.span
-        className={`inline-flex shrink-0 ${className ?? ""}`}
+        className="inline-flex shrink-0 align-middle leading-none"
         whileHover={{ scale: 1.12, rotate: -4 }}
         whileTap={{ scale: 0.94 }}
         transition={HOVER_TRANSITION}
-        // CSS-driven path: when nearest .group ancestor hovers, scale via
-        // CSS transform too. motion's whileHover handles direct hovers;
-        // this fallback handles button-wrapper hovers without requiring
-        // every parent to be motion-aware.
-        style={{ transformOrigin: "center" }}
+        style={{ transformOrigin: "center", display: "inline-flex" }}
       >
-        <Icon size={size} className="transition-transform duration-200 ease-out group-hover:scale-110" {...rest} />
+        <Icon
+          size={size}
+          className={`transition-transform duration-200 ease-out group-hover:scale-110 ${className ?? ""}`}
+          {...rest}
+        />
       </motion.span>
     );
   }
