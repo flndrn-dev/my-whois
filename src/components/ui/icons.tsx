@@ -2,6 +2,7 @@
 
 import { motion } from "motion/react";
 import {
+  Activity as Lu_Activity,
   AlertCircle as Lu_AlertCircle,
   ArrowLeftRight as Lu_ArrowLeftRight,
   ArrowRight as Lu_ArrowRight,
@@ -92,6 +93,7 @@ function PlainSpinner({ className, size = 16, ...rest }: IconProps) {
 }
 PlainSpinner.displayName = "Spinner";
 
+export const Activity = makeAnimatedIcon(Lu_Activity, "Activity");
 export const AlertCircle = makeAnimatedIcon(Lu_AlertCircle, "AlertCircle");
 export const ArrowLeftRight = makeAnimatedIcon(Lu_ArrowLeftRight, "ArrowLeftRight");
 export const ArrowRight = makeAnimatedIcon(Lu_ArrowRight, "ArrowRight");

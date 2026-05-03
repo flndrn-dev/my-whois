@@ -16,6 +16,7 @@ import { RawRdapDrawer } from "@/components/lookup/RawRdapDrawer";
 import { RedactionNotice } from "@/components/lookup/RedactionNotice";
 import { PageWithSideAds } from "@/components/layout/PageWithSideAds";
 import { ContentBreakAd } from "@/components/layout/ContentBreakAd";
+import { MonitoringBand } from "@/components/lookup/MonitoringBand";
 import { lookupDomain, DomainNotFoundError } from "@/lib/lookup";
 import { normalizeDomain } from "@/lib/validate-domain";
 import { domainPageJsonLd } from "@/lib/seo";
@@ -81,6 +82,7 @@ export default async function DomainPage({
         <RegistrarBand info={snapshot.info} />
         <DatesBand info={snapshot.info} domain={domain} />
         <NameserversBand info={snapshot.info} />
+        <MonitoringBand domain={domain} />
         <DnsRecordsTabs dns={snapshot.dns} />
         <SslInfoBand ssl={snapshot.ssl} />
         <TechStackBand tech={snapshot.tech} />

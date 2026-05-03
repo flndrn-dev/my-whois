@@ -1086,3 +1086,91 @@ In order:
 9. Surface to the user: "Site is live and indexable. Here's your manual checklist for Google Search Console, Bing, Yandex, IndexNow ownership file, HARO/Qwoted signups, and Reddit/Quora seeding."
 
 Do not ask for approval between phases. Execute the full plan.
+---
+
+# PATCH: MonitoringBand A/B Test (Cross-promo to web-down.com)
+
+> Applied as commit `<post-implementation>`. Adds an A/B-tested data-row that
+> cross-promotes the upcoming web-down.com monitoring service from
+> `/[domain]` result pages.
+
+## Architecture
+
+**Two-level randomness:**
+
+1. **Cohort assignment (persistent, localStorage)** — 50% of visitors are
+   assigned `Cohort A` (control, never sees the band), 50% `Cohort B`
+   (treatment). Same browser = same cohort forever.
+2. **Per-session render decision (sessionStorage)** — within Cohort B,
+   each new browser session has a 50/50 chance of "show" vs "hide".
+   Stays consistent within the session, fresh coin flip on next session.
+
+Net traffic distribution:
+
+```
+100% pageviews
+├── 50% Cohort A (localStorage)         → never see band
+└── 50% Cohort B (localStorage)
+    ├── 50% session "hide" (sessionStorage) → don't see this session
+    └── 50% session "show" (sessionStorage) → see band this session
+                                              = ~25% of total pageviews
+```
+
+## Files
+
+- `src/lib/ab-test.ts` — `getMonitoringBandCohort()` + `shouldRenderInThisSession()`,
+  both server-safe (return null on SSR), graceful fallback to "no band" when
+  storage is blocked.
+- `src/components/lookup/MonitoringBand.tsx` — `"use client"` band component.
+  Visually identical to other data-bands (RegistrarBand, NameserversBand) —
+  no card, no shadow, no CTA framing. Activity icon (animated via
+  @/components/ui/icons), uppercase MONITORING label, mono link to
+  web-down.com with UTM params.
+- `src/app/[domain]/page.tsx` — `<MonitoringBand domain={domain} />` placed
+  between `<NameserversBand />` and `<DnsRecordsTabs />`.
+
+## Kill-switch
+
+`NEXT_PUBLIC_WEBDOWN_LIVE=` controls activation. Empty/unset = the band
+never renders for anyone, regardless of cohort. Set to `"true"` in Dokploy
+once web-down.com is ready to accept traffic. No code redeploy required.
+
+Default behaviour (env unset): no rendering, no Umami events fired beyond
+the baseline `result_page_view`. Safe to ship before web-down.com launches.
+
+## Umami events fired
+
+| Event | When | Properties | Cohort |
+|---|---|---|---|
+| `result_page_view` | every result page mount | `domain`, `cohort` | A & B |
+| `monitoring_band_eligible` | Cohort B + kill-switch on | `domain`, `decision` | B only |
+| `monitoring_band_seen` | rendered (Cohort B + session "show") | `domain` | B only |
+| `monitoring_band_clicked` | link clicked | `domain` | B only |
+
+`monitoring_band_eligible` is the denominator for measuring the per-session
+show rate (`seen / eligible` should converge to ~50%) and per-eligibility
+CTR (`clicked / eligible`).
+
+## Statistical validity
+
+Effective render rate is ~25% of total pageviews, so reaching statistical
+significance takes ~4× the traffic of a single 50/50 split:
+
+- < 2000 result pageviews: data is too noisy
+- 2000–8000: trends visible but inconclusive
+- 8000+: solid signal, decisions OK
+
+Don't draw conclusions until each cohort has 2000+ result pageviews.
+
+## Cross-site attribution
+
+The link to web-down.com carries `utm_source=my-whois`,
+`utm_medium=monitoring-band`, `utm_campaign=ab-test`. web-down.com analytics
+can attribute paid signups back to the test once that side launches.
+
+## Out of scope for this patch
+
+- AdSense slots remain exactly as configured (`MID` and `FOOTER`).
+- No Convex tables, no account system, no watchlist changes.
+- No copy iteration tooling — copy is hard-coded in the component for now.
+
