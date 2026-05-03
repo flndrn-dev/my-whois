@@ -61,21 +61,23 @@ export async function AlternativesSection({ domain }: Props) {
         </div>
       </div>
 
-      <ul className="space-y-2">
+      <ul className="space-y-4">
         {candidates.map((alt) => {
           const status = availability[alt] ?? "unknown";
           const isTaken = status === "taken";
           return (
             <li
               key={alt}
-              className="rounded-lg border border-border bg-surface/40 p-4 flex flex-col sm:flex-row sm:items-center gap-3"
+              className="rounded-lg border border-border bg-surface/40 p-5"
             >
-              <div className="flex items-center gap-2 sm:w-56 shrink-0">
-                <Plus className="size-4 text-muted" />
+              {/* Row header — domain label on its own line so the registrar */}
+              {/* button grid below has the full width and a consistent rhythm. */}
+              <div className="flex items-center gap-2 pb-4 mb-4 border-b border-border/60">
+                <Plus className="size-4 text-muted shrink-0" />
                 {isTaken ? (
                   <a
                     href={`/${alt}`}
-                    className="font-mono text-sm hover:text-foreground transition-colors"
+                    className="font-mono text-sm hover:text-accent transition-colors"
                   >
                     {alt}
                   </a>
@@ -84,17 +86,20 @@ export async function AlternativesSection({ domain }: Props) {
                 )}
                 <AvailabilityBadge status={status} />
               </div>
-              <div className="flex flex-wrap gap-2 flex-1">
+
+              {/* Registrar grid — explicit columns scale with viewport so */}
+              {/* every button is the same width and rows align cleanly. */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5">
                 {REGISTRARS.map((r) => (
                   <a
                     key={r.id}
                     href={r.buildSearchUrl(alt)}
                     target="_blank"
                     rel="noopener noreferrer nofollow sponsored"
-                    className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background hover:bg-surface px-3 py-1.5 text-xs font-medium transition-colors"
+                    className="inline-flex items-center justify-between gap-2 rounded-md border border-border bg-background hover:bg-surface hover:border-accent/50 px-3 py-2 text-xs font-medium transition-colors min-w-0"
                   >
-                    {r.name}
-                    <ExternalLink className="size-3" />
+                    <span className="truncate">{r.name}</span>
+                    <ExternalLink className="size-3 shrink-0 text-muted" />
                   </a>
                 ))}
               </div>
