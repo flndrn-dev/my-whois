@@ -5,6 +5,9 @@ import { AdSlot } from "./AdSlot";
 // each page is placed inline at a natural content break — see
 // <ContentBreakAd /> and the page-level usages in app/page.tsx,
 // app/[domain]/page.tsx, app/compare/[slug]/page.tsx.
+//
+// Slot ID resolves at runtime via /api/config/ads so static-prerendered
+// pages still pick up the live slot from the runtime container.
 
 type Props = {
   children: ReactNode;
@@ -20,7 +23,7 @@ export function PageWithSideAds({ children, wide = false }: Props) {
       </main>
 
       <AdSlot
-        slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER ?? ""}
+        slot="footer"
         format="banner"
         label="Footer banner"
         reservedHeight={120}

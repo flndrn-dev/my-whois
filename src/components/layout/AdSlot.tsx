@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 declare global {
   interface Window {
@@ -8,10 +8,17 @@ declare global {
   }
 }
 
+type SlotKey = "mid" | "footer";
+
 type AdSlotProps = {
-  slotId: string;
+  /** Either pass an explicit slot ID OR set `slot` and let the component fetch
+   *  the live ID from /api/config/ads at runtime. The latter lets statically
+   *  prerendered pages pick up env values from the runtime container instead
+   *  of being baked at build time. */
+  slotId?: string;
+  slot?: SlotKey;
   format: "banner" | "rectangle" | "skyscraper" | "native";
-  /** Position label shown in the placeholder (e.g., "Sidebar — top"). */
+  /** Position label shown in the placeholder. */
   label?: string;
   className?: string;
   reservedHeight: number;
@@ -29,6 +36,40 @@ const FORMAT_CONFIG = {
   },
 } as const;
 
+const DEFAULT_CLIENT_ID = "ca-pub-3928224800312187";
+
+// Module-level cache so multiple AdSlot mounts share one fetch per page load.
+let configCache: Promise<{
+  clientId: string;
+  slots: { mid: string; footer: string };
+}> | null = null;
+
+function fetchAdsConfig() {
+  if (configCache) return configCache;
+  configCache = fetch("/api/config/ads", { cache: "force-cache" })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((j) => {
+      if (
+        j &&
+        typeof j.clientId === "string" &&
+        j.slots &&
+        typeof j.slots.mid === "string" &&
+        typeof j.slots.footer === "string"
+      ) {
+        return j;
+      }
+      return {
+        clientId: DEFAULT_CLIENT_ID,
+        slots: { mid: "", footer: "" },
+      };
+    })
+    .catch(() => ({
+      clientId: DEFAULT_CLIENT_ID,
+      slots: { mid: "", footer: "" },
+    }));
+  return configCache;
+}
+
 function Placeholder({
   className,
   reservedHeight,
@@ -40,7 +81,7 @@ function Placeholder({
   reservedHeight: number;
   format: AdSlotProps["format"];
   label?: string;
-  status: "pre-approval" | "pending-slot";
+  status: "pre-approval" | "pending-slot" | "loading";
 }) {
   const config = FORMAT_CONFIG[format];
   return (
@@ -60,25 +101,61 @@ function Placeholder({
         {format} · {config.sizeHint}
       </span>
       <span className="text-[10px] text-muted/80 italic mt-1">
-        {status === "pending-slot"
-          ? "Slot ID pending in env"
-          : "Reserved for advertising"}
+        {status === "loading"
+          ? "Loading ad config…"
+          : status === "pending-slot"
+            ? "Slot ID pending in env"
+            : "Reserved for advertising"}
       </span>
     </div>
   );
 }
 
 export function AdSlot({
-  slotId,
+  slotId: slotIdProp,
+  slot,
   format,
   label,
   className = "",
   reservedHeight,
 }: AdSlotProps) {
   const ref = useRef<HTMLModElement>(null);
-  const clientId =
-    process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID ?? "ca-pub-3928224800312187";
-  const enabled = !!clientId && !!slotId;
+
+  // Resolved slot ID from either the explicit prop or the runtime API fetch.
+  const [resolvedSlotId, setResolvedSlotId] = useState<string | null>(
+    slotIdProp ?? null,
+  );
+  const [resolvedClientId, setResolvedClientId] =
+    useState<string>(DEFAULT_CLIENT_ID);
+  const [loading, setLoading] = useState<boolean>(
+    !slotIdProp && slot != null,
+  );
+
+  // If the caller passed an explicit slotId, use it. Otherwise fetch config.
+  useEffect(() => {
+    if (slotIdProp) {
+      setResolvedSlotId(slotIdProp);
+      setLoading(false);
+      return;
+    }
+    if (!slot) {
+      setLoading(false);
+      return;
+    }
+    let cancelled = false;
+    setLoading(true);
+    fetchAdsConfig().then((cfg) => {
+      if (cancelled) return;
+      setResolvedClientId(cfg.clientId);
+      setResolvedSlotId(cfg.slots[slot] || "");
+      setLoading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [slotIdProp, slot]);
+
+  const enabled = !!resolvedClientId && !!resolvedSlotId;
 
   useEffect(() => {
     if (!enabled || !ref.current) return;
@@ -99,7 +176,19 @@ export function AdSlot({
     return () => observer.disconnect();
   }, [enabled]);
 
-  if (!clientId) {
+  if (loading) {
+    return (
+      <Placeholder
+        className={className}
+        reservedHeight={reservedHeight}
+        format={format}
+        label={label}
+        status="loading"
+      />
+    );
+  }
+
+  if (!resolvedClientId) {
     return (
       <Placeholder
         className={className}
@@ -111,7 +200,7 @@ export function AdSlot({
     );
   }
 
-  if (!slotId) {
+  if (!resolvedSlotId) {
     return (
       <Placeholder
         className={className}
@@ -131,8 +220,8 @@ export function AdSlot({
         ref={ref}
         className="adsbygoogle"
         style={{ display: "block" }}
-        data-ad-client={clientId}
-        data-ad-slot={slotId}
+        data-ad-client={resolvedClientId}
+        data-ad-slot={resolvedSlotId}
         data-ad-format={config.adFormat}
         data-full-width-responsive={config.responsive ? "true" : "false"}
         {...("layoutKey" in config
