@@ -121,29 +121,28 @@ export function AdSlot({
 }: AdSlotProps) {
   const ref = useRef<HTMLModElement>(null);
 
-  // Resolved slot ID from either the explicit prop or the runtime API fetch.
-  const [resolvedSlotId, setResolvedSlotId] = useState<string | null>(
-    slotIdProp ?? null,
+  // If the caller passed a non-empty slotIdProp at SSR time, use it
+  // directly — we never want to flash a loading placeholder when we
+  // already know the ID. Empty prop means we either need to fetch
+  // (slot key was passed) or there's nothing to render.
+  const hasInitialSlotId = !!slotIdProp;
+
+  const [resolvedSlotId, setResolvedSlotId] = useState<string>(
+    slotIdProp ?? "",
   );
   const [resolvedClientId, setResolvedClientId] =
     useState<string>(DEFAULT_CLIENT_ID);
   const [loading, setLoading] = useState<boolean>(
-    !slotIdProp && slot != null,
+    !hasInitialSlotId && slot != null,
   );
 
-  // If the caller passed an explicit slotId, use it. Otherwise fetch config.
+  // Only fetch when we don't already have a slotId AND a slot key was
+  // provided. If neither, render the pending-slot placeholder (or
+  // nothing-renderable state).
   useEffect(() => {
-    if (slotIdProp) {
-      setResolvedSlotId(slotIdProp);
-      setLoading(false);
-      return;
-    }
-    if (!slot) {
-      setLoading(false);
-      return;
-    }
+    if (hasInitialSlotId) return;
+    if (!slot) return;
     let cancelled = false;
-    setLoading(true);
     fetchAdsConfig().then((cfg) => {
       if (cancelled) return;
       setResolvedClientId(cfg.clientId);
@@ -153,7 +152,7 @@ export function AdSlot({
     return () => {
       cancelled = true;
     };
-  }, [slotIdProp, slot]);
+  }, [hasInitialSlotId, slot]);
 
   const enabled = !!resolvedClientId && !!resolvedSlotId;
 

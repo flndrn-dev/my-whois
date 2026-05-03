@@ -1,13 +1,16 @@
 import type { ReactNode } from "react";
 import { AdSlot } from "./AdSlot";
 
-// Single source of truth for the always-on bottom ad. The second ad on
-// each page is placed inline at a natural content break — see
-// <ContentBreakAd /> and the page-level usages in app/page.tsx,
-// app/[domain]/page.tsx, app/compare/[slug]/page.tsx.
+// Single source of truth for the always-on bottom ad. The second ad is
+// placed inline at a content break — see <ContentBreakAd /> and the
+// page-level usages in app/page.tsx, app/[domain]/page.tsx,
+// app/compare/[slug]/page.tsx.
 //
-// Slot ID resolves at runtime via /api/config/ads so static-prerendered
-// pages still pick up the live slot from the runtime container.
+// We pass BOTH slotId (read at server-render time, works on dynamic pages)
+// AND slot="footer" (runtime fetch fallback for static-prerendered pages).
+// AdSlot prefers slotId when non-empty.
+
+const FOOTER_SLOT_ID = process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER ?? "";
 
 type Props = {
   children: ReactNode;
@@ -23,6 +26,7 @@ export function PageWithSideAds({ children, wide = false }: Props) {
       </main>
 
       <AdSlot
+        slotId={FOOTER_SLOT_ID}
         slot="footer"
         format="banner"
         label="Footer banner"

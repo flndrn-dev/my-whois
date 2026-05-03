@@ -5,9 +5,11 @@ import { AdSlot } from "./AdSlot";
 // as a section divider after the user has gotten value, not as a barrier
 // before the tool.
 //
-// Slot ID resolves at runtime via /api/config/ads (see AdSlot) so static
-// pages still pick up the live ID from the runtime container without
-// needing a Docker build-arg pipeline.
+// Pass slotId (server-side env read for dynamic pages) AND slot="mid"
+// (runtime fetch fallback for static prerenders). AdSlot prefers slotId
+// when non-empty.
+
+const MID_SLOT_ID = process.env.NEXT_PUBLIC_ADSENSE_SLOT_MID ?? "";
 
 type Props = {
   className?: string;
@@ -16,6 +18,7 @@ type Props = {
 export function ContentBreakAd({ className = "my-12" }: Props) {
   return (
     <AdSlot
+      slotId={MID_SLOT_ID}
       slot="mid"
       format="banner"
       label="Mid-content break"
