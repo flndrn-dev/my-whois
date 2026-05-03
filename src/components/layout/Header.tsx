@@ -1,6 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ThemeSwitcher } from "./ThemeSwitcher";
+import { MobileNav } from "./MobileNav";
+
+const NAV_LINKS = [
+  { href: "/bulk", label: "Bulk" },
+  { href: "/watchlist", label: "Watchlist" },
+  { href: "/blog", label: "Blog" },
+  { href: "/about", label: "About" },
+] as const;
 
 export function Header() {
   return (
@@ -48,33 +56,29 @@ export function Header() {
             />
           </span>
         </Link>
-        <nav className="flex items-center gap-4 text-sm text-muted">
-          <Link
-            href="/bulk"
-            className="hover:text-foreground transition-colors hidden md:inline"
+
+        <div className="flex items-center gap-2">
+          {/* Desktop nav — all four links visible together at md+. */}
+          <nav
+            aria-label="Primary"
+            className="hidden md:flex items-center gap-5 text-sm text-muted"
           >
-            Bulk
-          </Link>
-          <Link
-            href="/watchlist"
-            className="hover:text-foreground transition-colors hidden md:inline"
-          >
-            Watchlist
-          </Link>
-          <Link
-            href="/blog"
-            className="hover:text-foreground transition-colors hidden sm:inline"
-          >
-            Blog
-          </Link>
-          <Link
-            href="/about"
-            className="hover:text-foreground transition-colors hidden sm:inline"
-          >
-            About
-          </Link>
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="hover:text-foreground transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
           <ThemeSwitcher />
-        </nav>
+
+          {/* Mobile hamburger — < md only. Same four links inside a sheet. */}
+          <MobileNav />
+        </div>
       </div>
     </header>
   );
