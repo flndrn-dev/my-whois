@@ -38,14 +38,15 @@ async function remoteCheck(domain: string): Promise<boolean | null> {
   if (!template) return null;
 
   const url = template.replace("{domain}", encodeURIComponent(domain));
+  const apiKey = process.env.WEBDOWN_API_KEY;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), REMOTE_TIMEOUT_MS);
 
+  const headers: Record<string, string> = { Accept: "application/json" };
+  if (apiKey) headers["X-Api-Key"] = apiKey;
+
   try {
-    const res = await fetch(url, {
-      signal: controller.signal,
-      headers: { Accept: "application/json" },
-    });
+    const res = await fetch(url, { signal: controller.signal, headers });
     if (!res.ok) return false;
     const data = (await res.json()) as { monitored?: unknown };
     return data.monitored === true;
