@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { isDomainMonitored } from "@/lib/data/monitored-domains";
 import { cacheGet, cacheSet } from "@/lib/cache";
 import { checkRateLimit, fingerprint } from "@/lib/rate-limit";
 
@@ -7,18 +6,19 @@ export const runtime = "nodejs";
 
 // Proxies a real-time "is this domain on web-down.com?" check.
 //
-// Resolution order:
-//   1. Hardcoded MONITORED_DOMAINS list (instant, no network).
-//   2. Remote call to web-down.com if WEBDOWN_CHECK_URL is set.
-//   3. Fallback: monitored = false (lets the A/B band fall through).
+// Single source of truth: the upstream /api/check endpoint on
+// web-down.com. If WEBDOWN_CHECK_URL is unset, every response is
+// monitored=false with source=fallback (lets the A/B band fall
+// through). Anything else is forwarded as-is, with short TTLs so a
+// newly-monitored domain shows up within minutes.
 //
-// Configure via env on Dokploy when web-down.com ships its check
-// endpoint:
+// Configure via env on Dokploy:
 //   WEBDOWN_CHECK_URL=https://web-down.com/api/check?domain={domain}
+//   WEBDOWN_API_KEY=<shared secret matching MYWHOIS_API_KEY on web-down>
 //
 // The {domain} placeholder is replaced with the URL-encoded apex.
-// Expected response: 200 with JSON `{ monitored: boolean }`. Any
-// other status, parse error, or timeout is treated as not monitored.
+// Expected upstream response: 200 with JSON `{ monitored: boolean }`.
+// Any other status, parse error, or timeout is treated as not monitored.
 
 const REMOTE_TIMEOUT_MS = 2500;
 const TTL_MONITORED_MS = 60 * 60 * 1000; // 1h
@@ -30,7 +30,7 @@ const DOMAIN_RE = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-
 
 type CheckResult = {
   monitored: boolean;
-  source: "hardcoded" | "remote" | "fallback";
+  source: "remote" | "fallback";
 };
 
 async function remoteCheck(domain: string): Promise<boolean | null> {
@@ -90,13 +90,6 @@ export async function GET(
       { error: "invalid_domain", domain: raw },
       { status: 400 },
     );
-  }
-
-  if (isDomainMonitored(domain)) {
-    const result: CheckResult = { monitored: true, source: "hardcoded" };
-    return NextResponse.json(result, {
-      headers: { "Cache-Control": "public, max-age=300, s-maxage=3600" },
-    });
   }
 
   const cached = cacheGet<CheckResult>("is-monitored", domain);
