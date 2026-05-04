@@ -23,30 +23,28 @@ type Props = {
 // MonitoringBand — three rendering modes:
 //
 // 1. MONITORED MODE
-//    Green pulsing dot + "Monitored · view dashboard at web-down.com →".
-//    Triggered by the real-time check at /api/is-monitored/[domain]
-//    returning true. The server proxies to web-down.com so newly-added
-//    customer domains light up without a code redeploy on this side.
-//    The link is factually true here, so the band bypasses the A/B
-//    test. Always shown when kill-switch is on.
+//    Green pulsing dot + "Monitored" label + button-styled "View
+//    dashboard ↗" CTA linking to web-down.com. Triggered by the
+//    real-time check at /api/is-monitored/[domain] returning true.
+//    The server proxies to web-down.com so newly-added customer
+//    domains light up without a code redeploy on this side. The link
+//    is factually true here, so the band bypasses the A/B test.
 //
 // 2. STANDARD A/B MODE  (every other domain)
 //    Same 40/60 link/neutral split as before:
 //      - Cohort A: always neutral
 //      - Cohort B: 80% sessions show link, 20% show neutral
 //      - Net: 40% link, 60% neutral
-//    Only fires when kill-switch is on; otherwise neutral for everyone.
 //
-// 3. NEUTRAL STATE  (kill-switch off, OR Cohort A, OR Cohort B
-//                    with session "hide")
+// 3. NEUTRAL STATE  (Cohort A, OR Cohort B with session "hide")
 //    Green pulsing dot + "Live · reachable just now". Truthful since
 //    the page only renders if the domain lookup succeeded.
 //
 // PREVIEW QUERY PARAMS:
 //   ?preview=monitoring  → force STANDARD link branch (current copy)
 //   ?preview=monitored   → force MONITORED variant (green-pulse copy)
-// Both bypass cohort + session + kill-switch + real-time check.
-// Neither fires Umami events so preview doesn't pollute A/B data.
+// Both bypass cohort + session + real-time check. Neither fires Umami
+// events so preview doesn't pollute A/B data.
 
 type RealTimeCheck = "unknown" | "monitored" | "not-monitored";
 
@@ -60,8 +58,6 @@ export function MonitoringBand({ domain }: Props) {
     useState<SessionRenderDecision | null>(null);
   const [realTimeCheck, setRealTimeCheck] = useState<RealTimeCheck>("unknown");
 
-  const linkActive = process.env.NEXT_PUBLIC_WEBDOWN_LIVE === "true";
-
   const isMonitored = realTimeCheck === "monitored";
 
   // Determine which variant to render this paint.
@@ -70,14 +66,9 @@ export function MonitoringBand({ domain }: Props) {
     mode = "monitored";
   } else if (previewStandard) {
     mode = "link";
-  } else if (isMonitored && linkActive) {
+  } else if (isMonitored) {
     mode = "monitored";
-  } else if (
-    !isMonitored &&
-    cohort === "B" &&
-    sessionDecision === "show" &&
-    linkActive
-  ) {
+  } else if (cohort === "B" && sessionDecision === "show") {
     mode = "link";
   } else {
     mode = "neutral";
@@ -139,7 +130,7 @@ export function MonitoringBand({ domain }: Props) {
 
     if (cohort === null) return; // Wait for client-side cohort resolution
 
-    if (cohort === "B" && linkActive) {
+    if (cohort === "B") {
       trackEvent("monitoring_band_eligible", {
         domain,
         decision: sessionDecision ?? "unknown",
@@ -157,7 +148,6 @@ export function MonitoringBand({ domain }: Props) {
     domain,
     previewStandard,
     previewMonitored,
-    linkActive,
   ]);
 
   const handleClick = () => {
@@ -203,18 +193,25 @@ export function MonitoringBand({ domain }: Props) {
                   <span className="absolute inset-0 rounded-full bg-success/40 animate-ping" />
                   <span className="relative inline-flex size-2 rounded-full bg-success" />
                 </span>
-                <span>Monitored</span>
-                <span className="text-muted">·</span>
-                <span>view dashboard at</span>
+                <span>Monitored by</span>
+                <a
+                  href={WEBDOWN_URL_MONITORED}
+                  onClick={handleClick}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-mono hover:text-accent transition-colors"
+                >
+                  web-down.com
+                </a>
               </span>
               <a
                 href={WEBDOWN_URL_MONITORED}
                 onClick={handleClick}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-sm font-mono hover:text-accent transition-colors"
+                className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.16em] font-mono rounded border border-success/40 bg-success/10 px-2.5 py-1 text-success hover:bg-success/20 hover:border-success/60 transition-colors"
               >
-                web-down.com
+                View dashboard
                 <ExternalLink className="size-3" />
               </a>
               {previewMonitored ? (
