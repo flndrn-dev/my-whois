@@ -23,10 +23,16 @@ type Props = {
 
 // MonitoringBand — three rendering modes:
 //
-// 1. MONITORED MODE  (always when the domain is in MONITORED_DOMAINS)
+// 1. MONITORED MODE
 //    Green pulsing dot + "Monitored · view dashboard at web-down.com →".
-//    Promoted out of the A/B test because the link is factually true for
-//    these domains. Always shown when kill-switch is on.
+//    Triggered by EITHER:
+//      a) Hardcoded match in MONITORED_DOMAINS (instant, no network).
+//      b) Real-time check via /api/is-monitored/[domain] returning true.
+//         The server proxies to web-down.com (when WEBDOWN_CHECK_URL is
+//         set) so newly-added customer domains light up without a code
+//         redeploy on this side.
+//    The link is factually true here, so the band bypasses the A/B
+//    test. Always shown when kill-switch is on.
 //
 // 2. STANDARD A/B MODE  (every other domain)
 //    Same 40/60 link/neutral split as before:
@@ -43,21 +49,32 @@ type Props = {
 // PREVIEW QUERY PARAMS:
 //   ?preview=monitoring  → force STANDARD link branch (current copy)
 //   ?preview=monitored   → force MONITORED variant (green-pulse copy)
-// Both bypass cohort + session + kill-switch. Neither fires Umami
-// events so preview doesn't pollute the A/B-test data.
+// Both bypass cohort + session + kill-switch + real-time check.
+// Neither fires Umami events so preview doesn't pollute A/B data.
+
+type RealTimeCheck = "unknown" | "monitored" | "not-monitored";
 
 export function MonitoringBand({ domain }: Props) {
   const params = useSearchParams();
   const previewStandard = params.get("preview") === "monitoring";
   const previewMonitored = params.get("preview") === "monitored";
 
-  const isMonitored = isDomainMonitored(domain);
+  const isHardcodedMonitored = isDomainMonitored(domain);
 
   const [cohort, setCohort] = useState<Cohort | null>(null);
   const [sessionDecision, setSessionDecision] =
     useState<SessionRenderDecision | null>(null);
+  const [realTimeCheck, setRealTimeCheck] = useState<RealTimeCheck>("unknown");
 
   const linkActive = process.env.NEXT_PUBLIC_WEBDOWN_LIVE === "true";
+
+  const isMonitored =
+    isHardcodedMonitored || realTimeCheck === "monitored";
+  const monitoredSource: "hardcoded" | "remote" | null = isHardcodedMonitored
+    ? "hardcoded"
+    : realTimeCheck === "monitored"
+      ? "remote"
+      : null;
 
   // Determine which variant to render this paint.
   let mode: "monitored" | "link" | "neutral";
@@ -78,12 +95,13 @@ export function MonitoringBand({ domain }: Props) {
     mode = "neutral";
   }
 
-  // Cohort + session resolution (only for non-monitored, non-preview real
-  // visits). Monitored-mode renders deterministically without entering
-  // the A/B test, so we don't read or write the storage flags.
+  // Cohort + session resolution (only for non-hardcoded, non-preview real
+  // visits). Hardcoded-monitored skips the A/B flow entirely; real-time
+  // matches we don't know about yet, so we still resolve cohort and let
+  // the mode logic upgrade to "monitored" if the fetch comes back true.
   useEffect(() => {
     if (previewStandard || previewMonitored) return;
-    if (isMonitored) return;
+    if (isHardcodedMonitored) return;
 
     const c = getMonitoringBandCohort();
     setCohort(c);
@@ -94,18 +112,46 @@ export function MonitoringBand({ domain }: Props) {
       const decision = shouldRenderInThisSession();
       setSessionDecision(decision);
     }
-  }, [domain, previewStandard, previewMonitored, isMonitored]);
+  }, [domain, previewStandard, previewMonitored, isHardcodedMonitored]);
+
+  // Real-time check against /api/is-monitored. Only for non-hardcoded,
+  // non-preview lookups. Aborts after 2.5s; on any failure we mark
+  // "not-monitored" so the band doesn't stall waiting forever.
+  useEffect(() => {
+    if (previewStandard || previewMonitored) return;
+    if (isHardcodedMonitored) return;
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 2500);
+
+    fetch(`/api/is-monitored/${encodeURIComponent(domain)}`, {
+      signal: controller.signal,
+      headers: { Accept: "application/json" },
+    })
+      .then((res) => (res.ok ? res.json() : { monitored: false }))
+      .then((data: { monitored?: unknown }) => {
+        setRealTimeCheck(data.monitored === true ? "monitored" : "not-monitored");
+      })
+      .catch(() => {
+        setRealTimeCheck("not-monitored");
+      })
+      .finally(() => clearTimeout(timer));
+
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [domain, previewStandard, previewMonitored, isHardcodedMonitored]);
 
   // Render-state events (real visits only).
   useEffect(() => {
     if (previewStandard || previewMonitored) return;
 
-    if (isMonitored) {
-      // Monitored renders always fire their own event when the band
-      // actually displays the monitored variant.
-      if (mode === "monitored") {
-        trackEvent("monitoring_band_monitored_rendered", { domain });
-      }
+    if (mode === "monitored") {
+      trackEvent("monitoring_band_monitored_rendered", {
+        domain,
+        source: monitoredSource ?? "unknown",
+      });
       return;
     }
 
@@ -129,27 +175,32 @@ export function MonitoringBand({ domain }: Props) {
     domain,
     previewStandard,
     previewMonitored,
-    isMonitored,
+    monitoredSource,
     linkActive,
   ]);
 
   const handleClick = () => {
     if (previewStandard || previewMonitored) return;
     if (isMonitored) {
-      trackEvent("monitoring_band_monitored_clicked", { domain });
+      trackEvent("monitoring_band_monitored_clicked", {
+        domain,
+        source: monitoredSource ?? "unknown",
+      });
     } else {
       trackEvent("monitoring_band_link_clicked", { domain });
     }
   };
 
-  // SSR / hydration guard: monitored-mode and preview-mode can render
-  // immediately. Standard A/B requires the client useEffect to resolve
-  // cohort + session, so we delay that branch.
+  // SSR / hydration guard: hardcoded-monitored and preview render
+  // immediately. Other lookups wait until BOTH the cohort and the
+  // real-time check have resolved — otherwise a domain that turns out
+  // to be remotely monitored would briefly flash the neutral or link
+  // variant before upgrading.
   if (
     !previewStandard &&
     !previewMonitored &&
-    !isMonitored &&
-    cohort === null
+    !isHardcodedMonitored &&
+    (cohort === null || realTimeCheck === "unknown")
   ) {
     return null;
   }

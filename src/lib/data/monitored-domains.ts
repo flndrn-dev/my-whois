@@ -26,8 +26,34 @@
 // behaviour (40/60 random link/neutral) on the next deploy.
 
 export const MONITORED_DOMAINS: readonly string[] = [
-  // ── Add your web-down.com customer domains below this line ──
-  // "example.com",
+  // Name.com
+  "pandit.sh",
+
+  // Namecheap
+  "cyberbear.sh",
+  "handlr.sh",
+  "mavifinans.sh",
+  "waypoints.sh",
+
+  // Hostinger
+  "web-down.com",
+  "my-whois.com",
+  "agecheckup.com",
+  "typer.tech",
+  "briven.tech",
+  "briven.cloud",
+  "ghostbot.dev",
+  "dealdroppr.com",
+  "videodj.studio",
+  "flndrnwear.com",
+  "waypoints.tech",
+  "cyclingtravel.cc",
+  "murphus.eu",
+  "flndrn.com",
+  "askklara.com",
+  "loowii.com",
+  "mavifinans.eu",
+  "krypco.eu",
 ];
 
 /**
